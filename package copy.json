@@ -1,0 +1,52 @@
+{
+  "name": "@aavoronov/myfiwidget",
+  "version": "0.0.1",
+  "description": "",
+  "unpkg": "dist/lib/es5/myfiwidget.js",
+  "jsdelivr": "dist/lib/es5/myfiwidget.js",
+  "main": "dist/lib/es5/myfiwidget.js",
+  "module": "dist/lib/es6/myfiwidget.js",
+  "exports": {
+    ".": {
+      "require": "./dist/lib/es5/myfiwidget.js",
+      "import": "./dist/lib/es6/myfiwidget.js"
+    }
+  },
+  "types": "dist/lib/es5/myfiwidget.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
+    "dev": "webpack --mode development --watch",
+    "tsbuild:es5": "tsc --build tsconfig.es5.json",
+    "tsbuild:es6": "tsc",
+    "tscompile": "npm run clean && npm run tsbuild:es5 && npm run tsbuild:es6",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aavoronov/myfiwidget.git"
+  },
+  "author": "aavoronov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aavoronov/myfiwidget/issues"
+  },
+  "homepage": "https://github.com/aavoronov/myfiwidget#readme",
+  "devDependencies": {
+    "@babel/core": "^7.21.8",
+    "@babel/eslint-parser": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
+    "babel-loader": "^9.1.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.7.4",
+    "eslint-webpack-plugin": "^4.0.1",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.4.3",
+    "typescript": "^5.0.4",
+    "webpack": "^5.84.0",
+    "webpack-cli": "^5.1.1"
+  },
+  "dependencies": {
+    "intl-tel-input": "^18.1.6"
+  }
+}
