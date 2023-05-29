@@ -17,7 +17,7 @@ createMYFIWidget(params);
 ```
 <body>
     <!--  -->
-    <script src="https://unpkg.com/@aavoronov/myfiwidget@0.0.5/dist/_bundles/myfiwidget.js"></script>
+    <script src="https://unpkg.com/@aavoronov/myfiwidget/dist/_bundles/myfiwidget.js"></script>
     <script>
       myfiwidget(params);
     </script>
