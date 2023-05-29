@@ -7,7 +7,7 @@ npm i @aavoronov/myfiwidget
 ## Со сборщиком
 
 ```
-import {createMYFIWidget} from @aavoronov/myfiwidget;
+import createMYFIWidget from @aavoronov/myfiwidget;
 //
 createMYFIWidget(params);
 ```
