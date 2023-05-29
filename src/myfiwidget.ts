@@ -31,12 +31,12 @@ function setInputFilter(textbox: Element, inputFilter: (value: string) => boolea
 interface IWidgetParams {
   container?: string;
   inn?: string;
-  partnerId?: string;
+  partnerId: string;
   fontFamily?: string;
   style?: string;
 }
 
-export default function createMYFIWidget(params: IWidgetParams) {
+export default function createMYFIWidget(params?: IWidgetParams) {
   const html = `
 <div class="w-container">
   <div class="w-field-wrap w-term">
@@ -73,12 +73,12 @@ export default function createMYFIWidget(params: IWidgetParams) {
 
 
 <style>.w-container {
-${params.style};
+${params.style || ""};
 }
 
 .w-container * {
   box-sizing: border-box;
-  font-family: ${params.fontFamily} || Roboto;
+  font-family: ${params.fontFamily || "Roboto"};
 }
 
 .test {

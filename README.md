@@ -28,19 +28,19 @@ createMYFIWidget(params);
 
 ```
 params: {
+  partnerId: string;
   container?: string;
   inn?: string;
-  partnerId?: string;
   fontFamily?: string;
   style?: string;
 }
 ```
 
+partnerId - ID партнера. Обязательный параметр.
+
 Если container не передан, по умолчанию скрипт ищет элемент с классом .w-wrap.
 
 inn - ИНН авторизованного пользователя.
-
-partnerId - ID партнера.
 
 fontFamily - шрифт, применяемый во всем блоке.
 
