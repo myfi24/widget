@@ -1,11 +1,16 @@
-#Установка
+# Установка
+
 npm i @aavoronov/myfiwidget
 
-#Использование
+# Использование
+
+```
 import {createMYFIWidget} from @aavoronov/myfiwidget;
 //
 createMYFIWidget(params);
+```
 
+```
 params: {
   container?: string;
   inn?: string;
@@ -13,6 +18,7 @@ params: {
   fontFamily?: string;
   style?: string;
 }
+```
 
 Если container не передан, по умолчанию скрипт ищет элемент с классом .w-wrap.
 inn - ИНН авторизованного пользователя.
