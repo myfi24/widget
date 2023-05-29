@@ -4,11 +4,27 @@ npm i @aavoronov/myfiwidget
 
 # Использование
 
+## Со сборщиком
+
 ```
 import {createMYFIWidget} from @aavoronov/myfiwidget;
 //
 createMYFIWidget(params);
 ```
+
+## CDN
+
+```
+<body>
+    <!--  -->
+    <script src="https://unpkg.com/@aavoronov/myfiwidget@0.0.5/dist/_bundles/myfiwidget.js"></script>
+    <script>
+      myfiwidget(params);
+    </script>
+  </body>
+```
+
+## Интерфейс объекта параметров
 
 ```
 params: {

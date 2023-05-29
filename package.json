@@ -1,8 +1,8 @@
 {
   "name": "@aavoronov/myfiwidget",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "",
-  "unpkg": "dist/_bundles/myfiwidget.js",
+  "unpkg": "dist/lib/es5/myfiwidget.js",
   "jsdelivr": "dist/_bundles/myfiwidget.js",
   "main": "dist/_bundles/myfiwidget.js",
   "module": "./dist/_bundles/myfiwidget.js",
@@ -18,9 +18,9 @@
     "dev": "webpack --mode development --watch",
     "tsbuild:es5": "tsc --build tsconfig.es5.json",
     "tsbuild:es6": "tsc",
-    "tscompile": "npm run tsbuild:es5 && npm run tsbuild:es6",
+    "tsbuild": "npm run tsbuild:es5 && npm run tsbuild:es6",
     "wpbuild": "webpack --mode production",
-    "build": "npm run clean && npm run tscompile && npm run wpbuild"
+    "build": "npm run clean && npm run tsbuild && npm run wpbuild"
   },
   "repository": {
     "type": "git",

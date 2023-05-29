@@ -8,7 +8,12 @@ module.exports = {
     path: path.resolve(__dirname, "dist/_bundles"),
     publicPath: "",
     libraryTarget: "umd",
-    library: "myfiwidget",
+    library: {
+      export: "default",
+      name: "myfiwidget",
+      type: "umd",
+    },
+    // libraryExport: "default",
     umdNamedDefine: true,
     globalObject: `(typeof self !== 'undefined' ? self : this)`,
   },
@@ -22,7 +27,7 @@ module.exports = {
       ".mjs": [".mjs", ".mts"],
     },
   },
-  devtool: "source-map",
+
   module: {
     rules: [
       {
