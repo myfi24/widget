@@ -21,7 +21,7 @@ createMYFIWidget(params);
     <script>
       myfiwidget(params);
     </script>
-  </body>
+</body>
 ```
 
 ## Интерфейс объекта параметров
