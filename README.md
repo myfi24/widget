@@ -28,15 +28,19 @@ createMYFIWidget(params);
 
 ```
 params: {
-  partnerId: string;
+  partnerCompanyId: string;
+  partnerUserId: string;
   container?: string;
   inn?: string;
   fontFamily?: string;
   style?: string;
+  apiUrl?: string;
 }
 ```
 
-partnerId - ID партнера. Обязательный параметр.
+partnerCompanyId - обязательный параметр.
+
+partnerUserId - обязательный параметр.
 
 container - селектор контейнера, в котором будет создана форма. Если параметр не передан, по умолчанию скрипт ищет элемент с классом .w-wrap.
 
@@ -45,3 +49,5 @@ inn - ИНН авторизованного пользователя.
 fontFamily - шрифт, применяемый во всем блоке.
 
 style - стили контейнера.
+
+apiUrl - базовый url API. По умолчанию https://api.mirmyfi.ru/v3

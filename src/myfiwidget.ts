@@ -1,4 +1,5 @@
 import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
+import "./index.css";
 
 function setInputFilter(textbox: Element, inputFilter: (value: string) => boolean, errMsg: string) {
   ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(function (event) {
@@ -31,185 +32,344 @@ function setInputFilter(textbox: Element, inputFilter: (value: string) => boolea
 interface IWidgetParams {
   container?: string;
   inn?: string;
-  partnerId: string;
+  partnerCompanyId: string;
+  partnerUserId: string;
   fontFamily?: string;
   style?: string;
+  apiUrl?: string;
 }
 
 export default function createMYFIWidget(params?: IWidgetParams) {
+  const container = params.container || ".w-wrap";
+  const inn = params.inn || "";
+  const partnerCompanyId = params.partnerCompanyId;
+  const partnerUserId = params.partnerUserId;
+  const fontFamily = params.fontFamily || "Roboto";
+  const style = params.style || "";
+  const apiUrl = params.apiUrl || "https://api.mirmyfi.ru/v3";
+
+  const css = `
+  :root {
+    --bg-gray: #ecf1f7;
+    --bg-active: #ffffff;
+    --border: #000;
+    --main-gray: #828282;
+    --text: #333333;
+    --error-bg: #ffd9d9;
+    --error-main: #eb5757;
+    --main-yellow: #f2c94c;
+    --secondary-yellow: #caa536;
+    --checkbox: #27ae60;
+  }
+  
+  .w-container * {
+    box-sizing: border-box;
+  }
+  
+  .test {
+    font-size: 16px;
+    color: salmon;
+  }
+  
+  .w-container {
+    width: 100%;
+    height: 100%;
+  
+    border-radius: 15px;
+  }
+  
+  .w-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .w-field-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 80px;
+    background-color: var(--bg-gray);
+    border-radius: 10px;
+    padding: 12px 26px;
+    position: relative;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  
+  .w-field-wrap.w-focused {
+    /* border: 1px solid black; */
+  }
+  
+  .w-field-name {
+    font-size: 18px;
+    color: var(--main-gray);
+    transition: all 0.2s;
+    position: relative;
+    top: 15px;
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  .w-field-name.w-active {
+    font-size: 14px;
+    transition: all 0.2s;
+    top: 0;
+  }
+  
+  .w-input {
+    border-width: 0;
+    /* height: 30px; */
+    background-color: var(--bg-gray);
+    border-radius: 5px;
+    transition: all 0.2s;
+    margin-top: 9px;
+    font-size: 24px;
+    position: absolute;
+    height: 60px;
+    width: calc(100% - 30px);
+  }
+  
+  input:focus {
+    outline: none;
+    transition: all 0.2s;
+  }
+  
+  .w-input.w-term {
+    pointer-events: none;
+  }
+  
+  .w-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 1px;
+    border-radius: 10px;
+    background: var(--bg-gray);
+    outline: none;
+    opacity: 0.8;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+  
+    position: absolute;
+    bottom: -1px;
+    left: 5px;
+    width: calc(100% - 14px);
+  }
+  
+  .w-slider-active-portion {
+    border-bottom: 2px var(--main-yellow) solid;
+    height: 2px;
+    /* background-color: #000; */
+    position: absolute;
+    bottom: 0px;
+    left: 7px;
+    z-index: 1111;
+    width: 0;
+    max-width: calc(100% - 14px);
+  }
+  
+  .w-slider:hover {
+    opacity: 1;
+  }
+  
+  .w-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--main-yellow);
+    border-color: var(--main-yellow);
+    cursor: pointer;
+  }
+  
+  .w-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--main-yellow);
+    cursor: pointer;
+    border-radius: 50%;
+    border-color: var(--main-yellow);
+  }
+  
+  .w-submit {
+    background-color: var(--main-yellow);
+    border-width: 0;
+    height: 60px;
+    width: 240px;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 0 auto;
+    display: block;
+  }
+  
+  .w-submit.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  .w-agreement-wrap {
+    grid-column: span 2;
+    width: 80%;
+    margin: 50px auto;
+  }
+  
+  .w-checkbox {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+  }
+  
+  .w-checkbox + label {
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+  }
+  .w-checkbox + label::before {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border: 1px solid var(--secondary-yellow);
+    border-radius: 0.25em;
+    margin-right: 0.5em;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 50% 50%;
+    cursor: pointer;
+  }
+  
+  .w-checkbox:checked + label::before {
+    border-color: var(--main-yellow);
+    background-color: var(--main-yellow);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+  }
+  
+  /* стили при наведении курсора на checkbox */
+  .w-checkbox:not(:disabled):not(:checked) + label:hover::before {
+    border-color: var(--secondary-yellow);
+  }
+  /* стили для активного состояния чекбокса (при нажатии на него) */
+  .w-checkbox:not(:disabled):active + label::before {
+    background-color: var(--secondary-yellow);
+    border-color: var(--secondary-yellow);
+  }
+  /* стили для чекбокса, находящегося в фокусе */
+  .w-checkbox:focus + label::before {
+    box-shadow: 0 0 0 0.2rem #caa53630;
+  }
+  /* стили для чекбокса, находящегося в фокусе и не находящегося в состоянии checked */
+  .w-checkbox:focus:not(:checked) + label::before {
+    border-color: var(--secondary-yellow);
+  }
+  /* стили для чекбокса, находящегося в состоянии disabled */
+  .w-checkbox:disabled + label::before {
+    background-color: red;
+  }
+  
+  .w-agreement {
+    font-size: 16px;
+    color: var(--main-gray);
+  }
+  
+  .w-link {
+    color: var(--main-gray);
+    transition: all 0.2s;
+  }
+  
+  .w-link:hover {
+    color: var(--main-yellow);
+    transition: all 0.2s;
+  }
+  
+  .w-submit:hover {
+    background-color: #fcc319;
+    transition: all 0.2s;
+  }`;
   const html = `
 <div class="w-container">
-  <div class="w-field-wrap w-term">
-    <span class="w-field-name">Срок</span>
-    <input type="text" class="w-input w-term" value="1 месяц" />
-    <input type="range" min="1" max="36" value="1" class="w-slider w-term" id="myRange" />
-    <div class="w-term w-slider-active-portion"></div>
-  </div>
-  <div class="w-field-wrap w-sum">
-    <span class="w-field-name">Сумма, ₽</span>
-    <input type="text" class="w-input w-sum" value="100000" />
-    <input type="range" min="1" max="50" value="1" class="w-slider w-sum" id="myRange" />
-    <div class="w-sum w-slider-active-portion"></div>
-  </div>
+<div class="w-grid">
+<div class="w-field-wrap w-term">
+  <span class="w-field-name w-active">Срок</span>
+  <input type="text" class="w-input w-term" value="3 месяца" />
+  <input type="range" min="3" max="36" value="3" class="w-slider w-term" id="myRange" />
+  <div class="w-term w-slider-active-portion"></div>
+</div>
+<div class="w-field-wrap w-sum">
+  <span class="w-field-name w-active">Сумма, ₽</span>
+  <input type="text" class="w-input w-sum" value="1000000" />
+  <input type="range" min="1" max="50" value="1" class="w-slider w-sum" id="myRange" />
+  <div class="w-sum w-slider-active-portion"></div>
+</div>
 
-  <div class="w-field-wrap">
-    <span class="w-field-name">ФИО*</span>
-    <input type="text" class="w-input w-name" />
-  </div>
-  <div class="w-field-wrap">
-    <span class="w-field-name">ИНН*</span>
-    <input type="text" class="w-input w-inn" />
-  </div>
+<div class="w-field-wrap">
+  <span class="w-field-name">Фамилия*</span>
+  <input type="text" class="w-input w-1stname" />
+</div>
+<div class="w-field-wrap">
+  <span class="w-field-name">Имя*</span>
+  <input type="text" class="w-input w-lastname" />
+</div>
+<div class="w-field-wrap">
+  <span class="w-field-name">Отчество</span>
+  <input type="text" class="w-input w-2ndname" />
+</div>
+<div class="w-field-wrap">
+  <span class="w-field-name">ИНН*</span>
+  <input type="text" class="w-input w-inn" />
+</div>
 
-  <div class="w-field-wrap">
-    <span class="w-field-name">Телефон*</span>
-    <input type="text" class="w-input w-phone" />
-  </div>
-  <div class="w-field-wrap">
-    <span class="w-field-name">Электронная почта*</span>
-    <input type="text" class="w-input w-email" />
-  </div>
-  <button class="w-submit">Отправить</button>
+<div class="w-field-wrap">
+  <span class="w-field-name w-active">Телефон*</span>
+  <input type="text" class="w-input w-phone" value="+" />
+</div>
+<div class="w-field-wrap">
+  <span class="w-field-name">Электронная почта*</span>
+  <input type="text" class="w-input w-email" />
+</div>
+</div>
+<div class="w-agreement-wrap">
+<input type="checkbox" class="w-checkbox" id="agree" name="agree" value="true" />
+<label class="w-agreement" for="agree"
+  ><span
+    >Я соглашаюсь с условиями обработки персональных данных и
+    <a class="w-link" href="" target="_blank">Политикой конфиденциальности</a>.</span
+  ></label
+>
+</div>
+<button class="w-submit disabled">Отправить</button>
 
+<link href="https://fonts.cdnfonts.com/css/roboto" rel="stylesheet" />
 
+                
 <style>.w-container {
-${params.style || ""};
+${style};
 }
 
 .w-container * {
   box-sizing: border-box;
-  font-family: ${params.fontFamily || "Roboto"};
+  font-family: ${fontFamily};
 }
 
-.test {
-font-size: 16px;
-color: salmon;
-}
+${css}
 
-.w-container {
-width: 100%;
-height: 100%;
-display: grid;
-gap: 10px;
-// border: 1px solid white;
-border-radius: 15px;
-grid-template-columns: 1fr 1fr;
-}
-
-.w-field-wrap {
-display: flex;
-flex-direction: column;
-background-color: rgb(220, 220, 220);
-border: 1px solid rgb(220, 220, 220);
-border-radius: 10px;
-padding: 5px;
-position: relative;
-width: 100%;
-transition: all 0.2s;
-}
-
-.w-field-wrap.w-focused {
-border: 1px solid black;
-background-color: #fff;
-}
-
-.w-field-name {
-font-size: 12px;
-}
-
-.w-input {
-border-width: 0;
-height: 30px;
-background-color: rgb(220, 220, 220);
-border-radius: 5px;
-transition: all 0.2s;
-}
-
-input:focus {
-outline: none;
-transition: all 0.2s;
-}
-
-.w-input.w-term {
-pointer-events: none;
-}
-
-.w-slider {
--webkit-appearance: none;
-appearance: none;
-width: 100%;
-height: 1px;
-border-radius: 10px;
-background: #000;
-outline: none;
-opacity: 0.8;
--webkit-transition: 0.2s;
-transition: opacity 0.2s;
-
-position: absolute;
-bottom: -3px;
-left: 5px;
-width: calc(100% - 14px);
-}
-
-.w-slider-active-portion {
-border-bottom: 1px #fff700 solid;
-height: 1px;
-background-color: #000;
-position: absolute;
-bottom: -1px;
-left: 7px;
-z-index: 1111;
-width: 0;
-max-width: calc(100% - 14px);
-}
-
-.w-slider:hover {
-opacity: 1;
-}
-
-.w-slider::-webkit-slider-thumb {
--webkit-appearance: none;
-appearance: none;
-width: 10px;
-height: 10px;
-border-radius: 50%;
-background: #fff700;
-cursor: pointer;
-}
-
-.w-slider::-moz-range-thumb {
-width: 10px;
-height: 10px;
-background: #fff700;
-cursor: pointer;
-border-radius: 50%;
-}
-
-.w-submit {
-width: 50%;
-}
-
-.iti__flag {
-background-image: url("../node_modules/intl-tel-input/build/img/flags.png");
-}
-
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-.iti__flag {
-  background-image: url("../node_modules/intl-tel-input/build/img/flags@2x.png");
-}
-}
 </style></div>
 `;
 
-  const wrapper = document.querySelector(params.container || ".w-wrap");
+  const wrapper = document.querySelector(container);
   console.log("wrapper", wrapper);
   if (!wrapper) return;
   wrapper.innerHTML = html;
 
   const wcontainer: HTMLElement = document.querySelector(".w-container")!;
 
-  const phoneInput: HTMLInputElement = document.querySelector(".w-phone")!;
+  const wgrid: HTMLElement = wcontainer.querySelector(".w-grid");
+
+  const phoneInput: HTMLInputElement = wcontainer.querySelector(".w-phone")!;
 
   // intlTelInput(phoneInput, {
   //   utilsScript: "/node_modules/intl-tel-input/build/js/utils.js",
@@ -219,17 +379,22 @@ background-image: url("../node_modules/intl-tel-input/build/img/flags.png");
     window.addEventListener(item, function () {
       const width = wcontainer.offsetWidth;
       if (width < 480) {
-        wcontainer.style["grid-template-columns"] = "1fr";
+        wgrid.style["grid-template-columns"] = "1fr";
       } else {
-        wcontainer.style["grid-template-columns"] = "1fr 1fr";
+        wgrid.style["grid-template-columns"] = "1fr 1fr";
       }
     })
   );
 
-  phoneInput.addEventListener("input", () => {
-    console.log(new AsYouType().input(phoneInput.value));
-    phoneInput.value = new AsYouType().input(phoneInput.value);
-    console.log("isValid", isValidPhoneNumber(phoneInput.value));
+  phoneInput.addEventListener("input", function () {
+    const value = this.value.replaceAll(" ", "");
+    if (value.length < 15) {
+      this.value = new AsYouType().input(this.value);
+    } else this.value = value.substring(0, value.length - 1);
+
+    if (!this.value) {
+      this.value = "+";
+    }
   });
 
   const digitsWithWhitespace = /^[0-9\b]|\t+$/;
@@ -239,32 +404,49 @@ background-image: url("../node_modules/intl-tel-input/build/img/flags.png");
 
   const multiplier = 1e6;
 
-  const termSlider = document.querySelector(".w-slider.w-term");
+  const termSlider = wcontainer.querySelector(".w-slider.w-term");
   !!termSlider && termSlider.addEventListener("input", handleTermSliderChange);
-  const termSliderActivePart: HTMLElement = document.querySelector(".w-term .w-slider-active-portion");
+  const termSliderActivePart: HTMLElement = wcontainer.querySelector(".w-term .w-slider-active-portion");
 
-  const termInput: HTMLInputElement = document.querySelector(".w-input.w-term")!;
+  const termInput: HTMLInputElement = wcontainer.querySelector(".w-input.w-term")!;
   //   !!termInput && termInput.addEventListener("input", handleTermInputChange);
-  termInput.value = "1 месяц";
+  termInput.value = "3 месяца";
 
-  const sumSlider: HTMLInputElement = document.querySelector(".w-slider.w-sum");
+  const sumSlider: HTMLInputElement = wcontainer.querySelector(".w-slider.w-sum");
   !!sumSlider && sumSlider.addEventListener("input", handleSumSliderChange);
-  const sumSliderActivePart: HTMLInputElement = document.querySelector(".w-sum .w-slider-active-portion");
+  const sumSliderActivePart: HTMLInputElement = wcontainer.querySelector(".w-sum .w-slider-active-portion");
 
-  const nameInput: HTMLInputElement = document.querySelector(".w-name")!;
-  const innInput: HTMLInputElement = document.querySelector(".w-inn")!;
-  innInput.value = params.inn || "";
+  const firstnameInput: HTMLInputElement = wcontainer.querySelector(".w-1stname")!;
+  const secondnameInput: HTMLInputElement = wcontainer.querySelector(".w-2ndname")!;
+  const lastnameInput: HTMLInputElement = wcontainer.querySelector(".w-lastname")!;
+  const innInput: HTMLInputElement = wcontainer.querySelector(".w-inn")!;
+  innInput.value = inn;
 
-  const emailInput: HTMLInputElement = document.querySelector(".w-email")!;
+  const emailInput: HTMLInputElement = wcontainer.querySelector(".w-email")!;
 
-  const sumInput: HTMLInputElement = document.querySelector(".w-input.w-sum")!;
+  const sumInput: HTMLInputElement = wcontainer.querySelector(".w-input.w-sum")!;
   !!sumInput && sumInput.addEventListener("input", handleSumInputChange);
 
-  [sumInput, nameInput, innInput, phoneInput, emailInput].forEach((item) => item.addEventListener("focus", handleFocusChange));
-  [sumInput, nameInput, innInput, phoneInput, emailInput].forEach((item) => item.addEventListener("blur", handleFocusChange));
+  [sumInput, firstnameInput, secondnameInput, lastnameInput, innInput, phoneInput, emailInput].forEach((item) =>
+    item.addEventListener("focus", handleFocusChange)
+  );
+  [sumInput, firstnameInput, secondnameInput, lastnameInput, innInput, phoneInput, emailInput].forEach((item) =>
+    item.addEventListener("blur", handleFocusChange)
+  );
   // sumInput.value = "100 000";
 
-  const submitBtn: HTMLInputElement = document.querySelector(".w-submit")!;
+  const submitBtn: HTMLInputElement = wcontainer.querySelector(".w-submit")!;
+
+  const agreement: HTMLInputElement = wcontainer.querySelector(".w-checkbox");
+  agreement.addEventListener("change", function () {
+    const hasAgreed = agreement.checked;
+    if (!hasAgreed) {
+      submitBtn.classList.add("disabled");
+    } else {
+      submitBtn.classList.remove("disabled");
+    }
+  });
+
   submitBtn.addEventListener("click", handleSubmit);
 
   setInputFilter(
@@ -283,16 +465,19 @@ background-image: url("../node_modules/intl-tel-input/build/img/flags.png");
     "Разрешены только числовые символы. Длина ИНН 10 или 12 цифр."
   );
 
-  return "test";
+  // return "test";
 
   function handleTermSliderChange(e) {
     const value = e.target.value;
-    const steps = parseInt(e.target.getAttribute("max")) - parseInt(e.target.getAttribute("min"));
+    const min = parseInt(e.target.getAttribute("min"));
+    const max = parseInt(e.target.getAttribute("max"));
 
-    const valueStep = (e.target.getAttribute("max") - 1) / steps;
+    const steps = max - min;
+
+    const valueStep = 1;
     const percentageStep = 100 / steps;
 
-    const fraction = percentageStep * ((value - 1) * valueStep);
+    const fraction = percentageStep * ((value - min) * valueStep);
 
     let suffix = "";
     if (value % 10 > 1 && value % 10 < 5) suffix = "а";
@@ -348,14 +533,20 @@ background-image: url("../node_modules/intl-tel-input/build/img/flags.png");
       parent.querySelector(".w-field-name").classList.add("w-active");
     } else {
       parent.classList.remove("w-focused");
+      if (!parent.querySelector(".w-input").value) {
+        parent.querySelector(".w-field-name").classList.remove("w-active");
+      }
       // sumInput.value = sumToLocale(e.target.value);
     }
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     try {
-      if (!nameInput.value) {
-        throw new Error("Заполните поле ФИО");
+      if (!lastnameInput.value) {
+        throw new Error("Заполните поле фамилии");
+      }
+      if (!firstnameInput.value) {
+        throw new Error("Заполните поле имени");
       }
       if (!innInput.value) {
         throw new Error("Заполните поле ИНН");
@@ -364,12 +555,10 @@ background-image: url("../node_modules/intl-tel-input/build/img/flags.png");
       if (!(trimmedInn.length === 10 || trimmedInn.length === 12)) {
         throw new Error("ИНН должен состоять из 10 или 12 цифр");
       }
-      if (!phoneInput.value) {
+      if (phoneInput.value === "+") {
         throw new Error("Заполните поле телефона");
       }
-      // if (!iti.isValidNumber()) {
-      //   throw new Error("Некорректный формат номера телефона");
-      // }
+
       if (!isValidPhoneNumber(phoneInput.value)) {
         throw new Error("Некорректный формат номера телефона");
       }
@@ -381,17 +570,43 @@ background-image: url("../node_modules/intl-tel-input/build/img/flags.png");
       }
 
       const values = {
-        partnerId: params.partnerId,
-        term: termInput.value,
-        sum: sumInput.value.replaceAll(" ", ""),
-        name: nameInput.value,
-        inn: trimmedInn,
-        // phone: iti.getNumber(intlTelInput.numberFormat.E164),
+        agreements: {
+          bki: true,
+          personal: true,
+          sharing: true,
+        },
+        amount: parseInt(sumInput.value.replaceAll(" ", "")),
         email: emailInput.value,
+        inn: trimmedInn,
+        first_name: firstnameInput.value,
+        second_name: secondnameInput.value,
+        last_name: lastnameInput.value,
+        partner_user_id: partnerUserId,
+        partner_company_id: partnerCompanyId,
+        phone: phoneInput.value.replaceAll(" ", ""),
+        service_code: "CREDIT",
+        term: parseInt(termInput.value),
       };
-      alert(JSON.stringify(values));
+
+      const res = await fetch(`${apiUrl}/widget/request/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (res.status !== 200) {
+        const detail = (await res.json()).detail;
+        let error = "";
+        if (Array.isArray(detail)) {
+          detail.forEach((item) => (error += item.msg + "\n"));
+        } else {
+          error = detail;
+        }
+        throw new Error(error);
+      }
     } catch (e) {
-      alert(e.message);
+      console.log(e);
+      alert(e.response?.data?.message ?? e.message);
     }
   }
 }

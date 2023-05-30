@@ -15,7 +15,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist",
-    "dev": "webpack --mode development --watch",
+    "wpdev": "webpack --mode development --watch",
     "tsbuild:es5": "tsc --build tsconfig.es5.json",
     "tsbuild:es6": "tsc",
     "tsbuild": "npm run tsbuild:es5 && npm run tsbuild:es6",
