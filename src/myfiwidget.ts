@@ -452,9 +452,9 @@ ${css}
   setInputFilter(
     sumInput,
     function (value) {
-      return (digitsWithWhitespace.test(value) && parseInt(value) < 5000001) || !value.length; // Allow digits and '.' only, using a RegExp.
+      return (digitsWithWhitespace.test(value) && parseInt(value) < 50000001) || !value.length; // Allow digits and '.' only, using a RegExp.
     },
-    "Разрешены только числовые символы. Сумма не больше 5 000 000."
+    "Разрешены только числовые символы. Сумма не больше 50 000 000."
   );
 
   setInputFilter(
