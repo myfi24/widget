@@ -1,5 +1,6 @@
 .*
 **/tsconfig.json
+**/tsconfig.es5.json
 **/webpack.config.js
 
 node_modules

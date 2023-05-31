@@ -1,5 +1,5 @@
 import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
-import "./index.css";
+// import "./index.css";
 
 function setInputFilter(textbox: Element, inputFilter: (value: string) => boolean, errMsg: string) {
   ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(function (event) {
@@ -125,7 +125,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     margin-top: 9px;
     font-size: 24px;
     position: absolute;
-    height: 60px;
+    height: 58px;
     width: calc(100% - 30px);
   }
   
@@ -213,7 +213,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   .w-agreement-wrap {
     grid-column: span 2;
     width: 80%;
-    margin: 50px auto;
+    margin: 30px auto;
   }
   
   .w-checkbox {
@@ -319,7 +319,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   <input type="text" class="w-input w-2ndname" />
 </div>
 <div class="w-field-wrap">
-  <span class="w-field-name">ИНН*</span>
+  <span class="w-field-name  ${!!inn ? "w-active" : ""}">ИНН*</span>
   <input type="text" class="w-input w-inn" />
 </div>
 
@@ -361,8 +361,16 @@ ${css}
 `;
 
   const wrapper = document.querySelector(container);
-  console.log("wrapper", wrapper);
-  if (!wrapper) return;
+  // console.log("wrapper", wrapper);
+
+  if (!wrapper) {
+    console.log("Нет контейнера");
+    return;
+  }
+  if (!partnerUserId || !partnerUserId) {
+    console.log("Не переданы обязательные параметры");
+    return;
+  }
   wrapper.innerHTML = html;
 
   const wcontainer: HTMLElement = document.querySelector(".w-container")!;

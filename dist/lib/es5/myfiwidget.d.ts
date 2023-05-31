@@ -1,4 +1,3 @@
-import "./index.css";
 interface IWidgetParams {
     container?: string;
     inn?: string;
