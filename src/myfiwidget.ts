@@ -1,6 +1,10 @@
 import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
 // import "./index.css";
 
+function numberWithSpaces(x: number) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 function setInputFilter(textbox: Element, inputFilter: (value: string) => boolean, errMsg: string) {
   ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(function (event) {
     textbox.addEventListener(event, function (e) {
@@ -12,6 +16,35 @@ function setInputFilter(textbox: Element, inputFilter: (value: string) => boolea
         }
 
         this.oldValue = this.value;
+        this.oldSelectionStart = this.selectionStart;
+        this.oldSelectionEnd = this.selectionEnd;
+      } else if (this.hasOwnProperty("oldValue")) {
+        // Rejected value: restore the previous one.
+        this.classList.add("input-error");
+        this.setCustomValidity(errMsg);
+        this.reportValidity();
+        this.value = this.oldValue;
+        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+      } else {
+        // Rejected value: nothing to restore.
+        this.value = "";
+      }
+    });
+  });
+}
+
+function setInputFilterWithWhitespaces(textbox: Element, inputFilter: (value: string) => boolean, errMsg: string) {
+  ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(function (event) {
+    textbox.addEventListener(event, function (e) {
+      if (inputFilter(this.value)) {
+        // Accepted value.
+        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+          this.classList.remove("input-error");
+          this.setCustomValidity("");
+        }
+
+        this.value = numberWithSpaces(this.value.replaceAll(" ", ""));
+        this.oldValue = numberWithSpaces(this.value.replaceAll(" ", ""));
         this.oldSelectionStart = this.selectionStart;
         this.oldSelectionEnd = this.selectionEnd;
       } else if (this.hasOwnProperty("oldValue")) {
@@ -212,7 +245,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   
   .w-agreement-wrap {
     grid-column: span 2;
-    width: 80%;
+    // width: 80%;
     margin: 30px auto;
   }
   
@@ -223,8 +256,6 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   }
   
   .w-checkbox + label {
-    display: inline-flex;
-    align-items: center;
     user-select: none;
   }
   .w-checkbox + label::before {
@@ -274,6 +305,9 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   .w-agreement {
     font-size: 16px;
     color: var(--main-gray);
+    display: flex;
+    align-items: baseline;
+    padding: 3px 0;
   }
   
   .w-link {
@@ -289,7 +323,12 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   .w-submit:hover {
     background-color: #fcc319;
     transition: all 0.2s;
-  }`;
+  }
+  
+  ul .w-bank-item::marker {
+    color: var(--main-yellow)
+  }
+  `;
   const html = `
 <div class="w-container">
 <div class="w-grid">
@@ -301,8 +340,8 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 </div>
 <div class="w-field-wrap w-sum">
   <span class="w-field-name w-active">Сумма, ₽</span>
-  <input type="text" class="w-input w-sum" value="1000000" />
-  <input type="range" min="1" max="50" value="1" class="w-slider w-sum" id="myRange" />
+  <input type="text" class="w-input w-sum" value="10 000" />
+  <input type="range" min="1" max="50000" value="1" class="w-slider w-sum" id="myRange" />
   <div class="w-sum w-slider-active-portion"></div>
 </div>
 
@@ -333,13 +372,27 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 </div>
 </div>
 <div class="w-agreement-wrap">
-<input type="checkbox" class="w-checkbox" id="agree" name="agree" value="true" />
-<label class="w-agreement" for="agree"
+<input type="checkbox" class="w-checkbox" id="agree1" name="agree1" value="true" />
+<label class="w-agreement" for="agree1"
   ><span
-    >Я соглашаюсь с условиями обработки персональных данных и
-    <a class="w-link" href="" target="_blank">Политикой конфиденциальности</a>.</span
+    >Я даю свое согласие на
+    <a class="w-link" href="" target="_blank">запрос в БКИ</a>.</span
   ></label
 >
+<input type="checkbox" class="w-checkbox" id="agree2" name="agree2" value="true" />
+<label class="w-agreement" for="agree2"
+  ><span
+    >Настоящим, в соответствии со ст. 9 Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных», Я выражаю свое согласие ООО «Майфи», ИНН 7702454664, на обработку и дальнейшую передачу в адрес кредитных организаций, указанных в электронной заявке персональных данных и направляемых мною в процессе рассмотрения электронной заявки документах подтверждаю, что даю такое согласие свободно, своей волей и в своем интересе. Согласие дается мной, для целей рассмотрения кредитной организацией вопросов о возможности предоставления мне кредитных продуктов.</label
+>
+<input type="checkbox" class="w-checkbox" id="agree3" name="agree3" value="true" />
+<label class="w-agreement" for="agree3"
+  ><span
+    >Я даю свое согласие на
+    <a class="w-link" href="" target="_blank">передачу сведений от Партнёра Банку</a>.</span
+  ></label
+>
+
+
 </div>
 <button class="w-submit disabled">Отправить</button>
 
@@ -410,7 +463,7 @@ ${css}
   // const phone = /^\+[1-9]\d{1,14}$/;
   const email = /.+@.+\.[A-Za-z]+$/;
 
-  const multiplier = 1e6;
+  const multiplier = 1e3;
 
   const termSlider = wcontainer.querySelector(".w-slider.w-term");
   !!termSlider && termSlider.addEventListener("input", handleTermSliderChange);
@@ -445,24 +498,27 @@ ${css}
 
   const submitBtn: HTMLInputElement = wcontainer.querySelector(".w-submit")!;
 
-  const agreement: HTMLInputElement = wcontainer.querySelector(".w-checkbox");
-  agreement.addEventListener("change", function () {
-    const hasAgreed = agreement.checked;
-    if (!hasAgreed) {
-      submitBtn.classList.add("disabled");
-    } else {
-      submitBtn.classList.remove("disabled");
-    }
-  });
+  const agreements: Array<HTMLInputElement> = Array.from(wcontainer.querySelectorAll(".w-checkbox"));
+  agreements.forEach((el) =>
+    el.addEventListener("change", function () {
+      const hasAgreedToAll = agreements[0].checked && agreements[1].checked && agreements[2].checked;
+      if (!hasAgreedToAll) {
+        submitBtn.classList.add("disabled");
+      } else {
+        submitBtn.classList.remove("disabled");
+      }
+    })
+  );
 
   submitBtn.addEventListener("click", handleSubmit);
 
-  setInputFilter(
+  setInputFilterWithWhitespaces(
     sumInput,
     function (value) {
-      return (digitsWithWhitespace.test(value) && parseInt(value) < 50000001) || !value.length; // Allow digits and '.' only, using a RegExp.
+      return (digits.test(value.replaceAll(" ", "")) && parseInt(value.replaceAll(" ", "")) < 1e13) || !value.length; // Allow digits and '.' only, using a RegExp.
+      //&& parseInt(value) < 50000001
     },
-    "Разрешены только числовые символы. Сумма не больше 50 000 000."
+    "Разрешены только числовые символы."
   );
 
   setInputFilter(
@@ -507,22 +563,24 @@ ${css}
     // console.log("fraction", fraction);
 
     sumSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
-    sumInput.value = `${parseInt(value) * multiplier}`;
+    sumInput.value = `${numberWithSpaces(parseInt(value) * multiplier)}`;
   }
 
   function handleSumInputChange(e: InputEvent) {
-    if (!digits.test((e.target as HTMLInputElement).value)) {
-      return;
-    }
-    const value = (e.target as HTMLInputElement).value;
+    // if (!digits.test((e.target as HTMLInputElement).value)) {
+    //   return;
+    // }
+    const value = (e.target as HTMLInputElement).value.replaceAll(" ", "");
+
     const steps = parseInt(sumSlider.getAttribute("max")) - parseInt(sumSlider.getAttribute("min"));
+    // console.log("value", value);
     const valueStep = (parseInt(sumSlider.getAttribute("max")) - 1) / steps;
     const percentageStep = 100 / steps;
     const fraction = (percentageStep * (parseInt(value) - 1) * valueStep) / multiplier;
 
     sumSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
 
-    const sliderValue = parseInt((e.target as HTMLInputElement).value) / multiplier + 1;
+    const sliderValue = parseInt(value) / multiplier + 1;
 
     sumSlider.value = `${sliderValue}`;
   }
@@ -548,6 +606,17 @@ ${css}
     }
   }
 
+  function resetForm() {
+    termInput.value = "3 месяца";
+    sumInput.value = "10 000";
+    firstnameInput.value = "";
+    secondnameInput.value = "";
+    lastnameInput.value = "";
+    innInput.value = "";
+    phoneInput.value = "+";
+    emailInput.value = "";
+  }
+
   async function handleSubmit() {
     try {
       if (!lastnameInput.value) {
@@ -558,6 +627,12 @@ ${css}
       }
       if (!innInput.value) {
         throw new Error("Заполните поле ИНН");
+      }
+      if (!sumInput.value) {
+        throw new Error("Заполните поле суммы");
+      }
+      if (parseInt(sumInput.value.replaceAll(" ", "")) < 1e4) {
+        throw new Error("Сумма должна быть не менее 10 000 ₽");
       }
       const trimmedInn = innInput.value.toString().replaceAll(" ", "");
       if (!(trimmedInn.length === 10 || trimmedInn.length === 12)) {
@@ -579,9 +654,9 @@ ${css}
 
       const values = {
         agreements: {
-          bki: true,
-          personal: true,
-          sharing: true,
+          bki: !!agreements[0].checked,
+          personal: !!agreements[1].checked,
+          sharing: !!agreements[2].checked,
         },
         amount: parseInt(sumInput.value.replaceAll(" ", "")),
         email: emailInput.value,
@@ -612,6 +687,16 @@ ${css}
         }
         throw new Error(error);
       }
+
+      const data = await res.json();
+      const banks = data.map((item) => item.to_company.name_clear);
+
+      resetForm();
+      const banksUl = banks.map((item: string) => `<li class="w-bank-item">${item}</li>`);
+      wrapper.querySelector(
+        ".w-agreement-wrap"
+      ).innerHTML = `<p>Ваша заявка отправлена в: <ul>${banksUl}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>`;
+      wrapper.querySelector(".w-submit").outerHTML = "";
     } catch (e) {
       console.log(e);
       alert(e.response?.data?.message ?? e.message);
