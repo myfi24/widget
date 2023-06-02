@@ -367,7 +367,7 @@ ${css}
     console.log("Нет контейнера");
     return;
   }
-  if (!partnerUserId || !partnerUserId) {
+  if (!partnerUserId || !partnerCompanyId) {
     console.log("Не переданы обязательные параметры");
     return;
   }
