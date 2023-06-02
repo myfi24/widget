@@ -509,10 +509,10 @@ ${css}
   setInputFilterWithWhitespaces(
     sumInput,
     function (value) {
-      return (digits.test(value.replaceAll(" ", "")) && parseInt(value.replaceAll(" ", "")) < 1e13) || !value.length; // Allow digits and '.' only, using a RegExp.
+      return (digits.test(value.replaceAll(" ", "")) && parseInt(value.replaceAll(" ", "")) < 1e9) || !value.length; // Allow digits and '.' only, using a RegExp.
       //&& parseInt(value) < 50000001
     },
-    "Разрешены только числовые символы."
+    "Разрешены только числовые символы. Сумма до 1 млрд рублей."
   );
 
   setInputFilter(
