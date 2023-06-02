@@ -1,6 +1,6 @@
 {
   "name": "@aavoronov/myfiwidget",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "",
   "unpkg": "dist/lib/es5/myfiwidget.js",
   "jsdelivr": "dist/_bundles/myfiwidget.js",

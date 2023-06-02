@@ -347,11 +347,11 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 
 <div class="w-field-wrap">
   <span class="w-field-name">Фамилия*</span>
-  <input type="text" class="w-input w-1stname" />
+  <input type="text" class="w-input w-lastname" />
 </div>
 <div class="w-field-wrap">
   <span class="w-field-name">Имя*</span>
-  <input type="text" class="w-input w-lastname" />
+  <input type="text" class="w-input w-1stname" />
 </div>
 <div class="w-field-wrap">
   <span class="w-field-name">Отчество</span>
@@ -372,13 +372,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 </div>
 </div>
 <div class="w-agreement-wrap">
-<input type="checkbox" class="w-checkbox" id="agree1" name="agree1" value="true" />
-<label class="w-agreement" for="agree1"
-  ><span
-    >Я даю свое согласие на
-    <a class="w-link" href="" target="_blank">запрос в БКИ</a>.</span
-  ></label
->
+
 <input type="checkbox" class="w-checkbox" id="agree2" name="agree2" value="true" />
 <label class="w-agreement" for="agree2"
   ><span
@@ -501,7 +495,7 @@ ${css}
   const agreements: Array<HTMLInputElement> = Array.from(wcontainer.querySelectorAll(".w-checkbox"));
   agreements.forEach((el) =>
     el.addEventListener("change", function () {
-      const hasAgreedToAll = agreements[0].checked && agreements[1].checked && agreements[2].checked;
+      const hasAgreedToAll = agreements[0].checked && agreements[1].checked;
       if (!hasAgreedToAll) {
         submitBtn.classList.add("disabled");
       } else {
@@ -654,9 +648,9 @@ ${css}
 
       const values = {
         agreements: {
-          bki: !!agreements[0].checked,
-          personal: !!agreements[1].checked,
-          sharing: !!agreements[2].checked,
+          bki: false,
+          personal: !!agreements[0].checked,
+          sharing: !!agreements[1].checked,
         },
         amount: parseInt(sumInput.value.replaceAll(" ", "")),
         email: emailInput.value,
