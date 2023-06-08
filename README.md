@@ -3,11 +3,11 @@
 ## Со сборщиком
 
 ```
-npm i @aavoronov/myfiwidget
+npm i @myfi/widget
 ```
 
 ```
-import createMYFIWidget from @aavoronov/myfiwidget;
+import createMYFIWidget from @myfi/widget;
 //
 createMYFIWidget(params);
 ```
@@ -17,7 +17,7 @@ createMYFIWidget(params);
 ```
 <body>
     <!--  -->
-    <script src="https://unpkg.com/@aavoronov/myfiwidget/dist/_bundles/myfiwidget.js"></script>
+    <script src="https://unpkg.com/@myfi/widget/dist/_bundles/myfiwidget.js"></script>
     <script>
       myfiwidget(params);
     </script>
