@@ -2,11 +2,11 @@
 
 ## Со сборщиком
 
-```
+```bash
 npm i @myfi/widget
 ```
 
-```
+```js
 import createMYFIWidget from @myfi/widget;
 //
 createMYFIWidget(params);
@@ -14,7 +14,7 @@ createMYFIWidget(params);
 
 ## CDN
 
-```
+```html
 <body>
     <!--  -->
     <script src="https://unpkg.com/@myfi/widget/dist/_bundles/myfiwidget.js"></script>
@@ -26,7 +26,7 @@ createMYFIWidget(params);
 
 ## Интерфейс объекта параметров
 
-```
+```js
 params: {
   partnerCompanyId: string;
   partnerUserId: string;
