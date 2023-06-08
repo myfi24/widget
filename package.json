@@ -1,7 +1,7 @@
 {
-  "name": "@aavoronov/myfiwidget",
-  "version": "0.0.14",
-  "description": "",
+  "name": "@myfi/widget",
+  "version": "0.0.15",
+  "description": "Виджет подачи кредитных заявок для бизнеса",
   "unpkg": "dist/lib/es5/myfiwidget.js",
   "jsdelivr": "dist/_bundles/myfiwidget.js",
   "main": "dist/_bundles/myfiwidget.js",
@@ -11,6 +11,9 @@
       "require": "./dist/_bundles/myfiwidget.js",
       "import": "./dist/_bundles/myfiwidget.js"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -24,14 +27,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aavoronov/myfiwidget.git"
+    "url": "git+https://github.com/myfi24/widget.git"
   },
   "author": "aavoronov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/aavoronov/myfiwidget/issues"
+    "url": "https://github.com/myfi24/widget/issues"
   },
-  "homepage": "https://github.com/aavoronov/myfiwidget#readme",
+  "homepage": "http://widget.myfi24.ru",
   "devDependencies": {
     "@babel/core": "^7.21.8",
     "@babel/eslint-parser": "^7.21.8",
