@@ -1,5 +1,4 @@
 import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
-// import "./index.css";
 
 function numberWithSpaces(x: number) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -187,8 +186,10 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     bottom: -1px;
     left: 5px;
     width: calc(100% - 14px);
+    margin: 2px;
   }
-  
+
+
   .w-slider-active-portion {
     border-bottom: 2px var(--main-yellow) solid;
     height: 2px;
@@ -214,7 +215,9 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     background: var(--main-yellow);
     border-color: var(--main-yellow);
     cursor: pointer;
+
   }
+
   
   .w-slider::-moz-range-thumb {
     width: 14px;
@@ -328,10 +331,24 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   ul .w-bank-item::marker {
     color: var(--main-yellow)
   }
+
+
   `;
   const html = `
 <div class="w-container">
 <div class="w-grid">
+
+<!-- <div class="w-field-wrap">
+  <span class="w-field-name w-active">Продукт</span>
+  <span class="w-selected">Кредит</span>
+  <ul class="w-dropdown">
+    <li>Кредит</li>
+    <li>Факторинг</li>
+    <li>Лизинг</li>
+    <li>Банковские гарантии</li>
+  </ul>
+</div>
+<span></span> -->
 <div class="w-field-wrap w-term">
   <span class="w-field-name w-active">Срок</span>
   <input type="text" class="w-input w-term" value="3 месяца" />
@@ -344,6 +361,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   <input type="range" min="1" max="50000" value="1" class="w-slider w-sum" id="myRange" />
   <div class="w-sum w-slider-active-portion"></div>
 </div>
+
 
 <div class="w-field-wrap">
   <span class="w-field-name">Фамилия*</span>
@@ -408,7 +426,6 @@ ${css}
 `;
 
   const wrapper = document.querySelector(container);
-  // console.log("wrapper", wrapper);
 
   if (!wrapper) {
     console.log("Нет контейнера");
@@ -426,9 +443,9 @@ ${css}
 
   const phoneInput: HTMLInputElement = wcontainer.querySelector(".w-phone")!;
 
-  // intlTelInput(phoneInput, {
-  //   utilsScript: "/node_modules/intl-tel-input/build/js/utils.js",
-  // });
+  const select: HTMLSpanElement = wcontainer.querySelector(".w-selected")!;
+  const dropdown: HTMLUListElement = wcontainer.querySelector(".w-dropdown")!;
+  // let selectActive: boolean = true;
 
   ["DOMContentLoaded", "resize", "load"].forEach((item) =>
     window.addEventListener(item, function () {
@@ -452,9 +469,39 @@ ${css}
     }
   });
 
+  // select.addEventListener("click", function () {
+  //   console.log("selectActive", selectActive);
+  //   if (selectActive) {
+  //     dropdown.classList.add("w-active");
+  //     select.classList.add("w-active");
+  //   } else {
+  //     dropdown.classList.remove("w-active");
+  //     select.classList.remove("w-active");
+  //   }
+  //   selectActive = !selectActive;
+  // });
+
+  // dropdown.addEventListener("click", function (e: MouseEvent) {
+  //   const value = (e.target as HTMLSpanElement).innerHTML;
+  //   console.log("value", value);
+
+  //   select.innerText = value;
+  //   selectActive = !selectActive;
+  //   dropdown.classList.remove("w-active");
+  //   select.classList.remove("w-active");
+  // });
+
+  // document.addEventListener("click", function (e: MouseEvent) {
+  //   const target = e.target as HTMLElement;
+  //   const clickAway = target !== dropdown && target !== select;
+  //   if (!!selectActive && clickAway) {
+  //     console.log("selectActive", selectActive);
+  //     console.log("fired");
+  //   }
+  // });
+
   const digitsWithWhitespace = /^[0-9\b]|\t+$/;
   const digits = /^[0-9\b]+$/;
-  // const phone = /^\+[1-9]\d{1,14}$/;
   const email = /.+@.+\.[A-Za-z]+$/;
 
   const multiplier = 1e3;
@@ -464,7 +511,6 @@ ${css}
   const termSliderActivePart: HTMLElement = wcontainer.querySelector(".w-term .w-slider-active-portion");
 
   const termInput: HTMLInputElement = wcontainer.querySelector(".w-input.w-term")!;
-  //   !!termInput && termInput.addEventListener("input", handleTermInputChange);
   termInput.value = "3 месяца";
 
   const sumSlider: HTMLInputElement = wcontainer.querySelector(".w-slider.w-sum");
@@ -488,7 +534,6 @@ ${css}
   [sumInput, firstnameInput, secondnameInput, lastnameInput, innInput, phoneInput, emailInput].forEach((item) =>
     item.addEventListener("blur", handleFocusChange)
   );
-  // sumInput.value = "100 000";
 
   const submitBtn: HTMLInputElement = wcontainer.querySelector(".w-submit")!;
 
@@ -509,21 +554,18 @@ ${css}
   setInputFilterWithWhitespaces(
     sumInput,
     function (value) {
-      return (digits.test(value.replaceAll(" ", "")) && parseInt(value.replaceAll(" ", "")) < 1e9) || !value.length; // Allow digits and '.' only, using a RegExp.
-      //&& parseInt(value) < 50000001
+      return (digits.test(value.replaceAll(" ", "")) && parseInt(value.replaceAll(" ", "")) < 1e9) || !value.length;
     },
-    "Разрешены только числовые символы. Сумма до 1 млрд рублей."
+    "Разрешены только числовые символы. Вручную можно ввести сумму до 1 млрд."
   );
 
   setInputFilter(
     innInput,
     function (value) {
-      return (digits.test(value) && value.replaceAll(" ", "").length < 13) || !value.length; // Allow digits and '.' only, using a RegExp.
+      return (digits.test(value) && value.replaceAll(" ", "").length < 13) || !value.length;
     },
     "Разрешены только числовые символы. Длина ИНН 10 или 12 цифр."
   );
-
-  // return "test";
 
   function handleTermSliderChange(e) {
     const value = e.target.value;
@@ -554,20 +596,15 @@ ${css}
     const percentageStep = 100 / steps;
 
     const fraction = percentageStep * ((parseInt(value) - 1) * valueStep);
-    // console.log("fraction", fraction);
 
     sumSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
     sumInput.value = `${numberWithSpaces(parseInt(value) * multiplier)}`;
   }
 
   function handleSumInputChange(e: InputEvent) {
-    // if (!digits.test((e.target as HTMLInputElement).value)) {
-    //   return;
-    // }
     const value = (e.target as HTMLInputElement).value.replaceAll(" ", "");
 
     const steps = parseInt(sumSlider.getAttribute("max")) - parseInt(sumSlider.getAttribute("min"));
-    // console.log("value", value);
     const valueStep = (parseInt(sumSlider.getAttribute("max")) - 1) / steps;
     const percentageStep = 100 / steps;
     const fraction = (percentageStep * (parseInt(value) - 1) * valueStep) / multiplier;
@@ -580,8 +617,6 @@ ${css}
   }
 
   function handleFocusChange(e) {
-    // const fraction = e.target.value * multiplier;
-    // sumInput.value = sumToLocale(fraction) + " ₽";
     let isFocused = document.activeElement === e.target;
 
     let parent = e.target.parentElement;
@@ -596,7 +631,6 @@ ${css}
       if (!parent.querySelector(".w-input").value) {
         parent.querySelector(".w-field-name").classList.remove("w-active");
       }
-      // sumInput.value = sumToLocale(e.target.value);
     }
   }
 

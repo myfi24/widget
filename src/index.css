@@ -74,7 +74,7 @@
   margin-top: 9px;
   font-size: 24px;
   position: absolute;
-  height: 60px;
+  height: 58px;
   width: calc(100% - 30px);
 }
 
@@ -161,8 +161,8 @@ input:focus {
 
 .w-agreement-wrap {
   grid-column: span 2;
-  width: 80%;
-  margin: 50px auto;
+  /* width: 80%; */
+  margin: 30px auto;
 }
 
 .w-checkbox {
@@ -172,8 +172,6 @@ input:focus {
 }
 
 .w-checkbox + label {
-  display: inline-flex;
-  align-items: center;
   user-select: none;
 }
 .w-checkbox + label::before {
@@ -223,6 +221,9 @@ input:focus {
 .w-agreement {
   font-size: 16px;
   color: var(--main-gray);
+  display: flex;
+  align-items: baseline;
+  padding: 3px 0;
 }
 
 .w-link {
@@ -238,4 +239,71 @@ input:focus {
 .w-submit:hover {
   background-color: #fcc319;
   transition: all 0.2s;
+}
+
+ul .w-bank-item::marker {
+  color: var(--main-yellow);
+}
+
+.w-selected {
+  z-index: 100;
+  font-size: 24px;
+  line-height: 1.3;
+  padding: 0em 1.4em 0em 0;
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+  border-radius: 0.5em;
+  background-color: var(--bg-gray);
+  position: relative;
+  cursor: pointer;
+}
+
+.w-selected::after {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxNiAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguNzQ3NjUgOS4xNTgyN0M4LjM0OTgzIDkuNjA2MTUgNy42NTAxNyA5LjYwNjE1IDcuMjUyMzUgOS4xNTgyN0wwLjgxNzg0MSAxLjkxNDA5QzAuMjQ0OTQ4IDEuMjY5MTEgMC43MDI4MTkgMC4yNSAxLjU2NTQ5IDAuMjVMMTQuNDM0NSAwLjI1QzE1LjI5NzIgMC4yNSAxNS43NTUxIDEuMjY5MTEgMTUuMTgyMiAxLjkxNDA5TDguNzQ3NjUgOS4xNTgyN1oiIGZpbGw9IiNGMkM5NEMiLz4KPC9zdmc+Cg==");
+  background-repeat: no-repeat, repeat;
+  background-size: 15px;
+  background-position: 50%;
+  transition: all 0.2s;
+}
+
+.w-selected.w-active::after {
+  transform: rotate(180deg);
+  transition: all 0.2s;
+}
+
+.w-dropdown {
+  z-index: 100;
+  display: none;
+  font-size: 24px;
+  line-height: 1.3;
+  padding: 10px;
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+  border-radius: 15px;
+  background-color: var(--bg-gray);
+  -webkit-box-shadow: 0px 0px 8px 5px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 0px 8px 5px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 0px 8px 5px rgba(34, 60, 80, 0.2);
+}
+.w-dropdown.w-active {
+  display: block;
+}
+.w-dropdown li {
+  padding: 3px 0;
+  cursor: pointer;
+}
+.w-dropdown li:hover {
+  text-decoration: underline;
+}
+.w-dropdown li::marker {
+  content: "";
 }
