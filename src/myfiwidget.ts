@@ -720,7 +720,7 @@ ${css}
       const banks = data.map((item) => item.to_company.name_clear);
 
       resetForm();
-      const banksUl = banks.map((item: string) => `<li class="w-bank-item">${item}</li>`);
+      const banksUl = banks.map((item: string) => `<li class="w-bank-item">${item}</li>`).join("");
       wrapper.querySelector(
         ".w-agreement-wrap"
       ).innerHTML = `<p>Ваша заявка отправлена в: <ul>${banksUl}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>`;
