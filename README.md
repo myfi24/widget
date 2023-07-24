@@ -34,6 +34,7 @@ params: {
   inn?: string;
   fontFamily?: string;
   style?: string;
+  markerStyle?: string;
   apiUrl?: string;
 }
 ```
@@ -49,5 +50,7 @@ inn - ИНН авторизованного пользователя.
 fontFamily - шрифт, применяемый во всем блоке.
 
 style - стили контейнера.
+
+markerStyle - стили маркеров элементов маркированного списка.
 
 apiUrl - базовый url API. По умолчанию https://api.mirmyfi.ru/v3

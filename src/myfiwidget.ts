@@ -68,6 +68,7 @@ interface IWidgetParams {
   partnerUserId: string;
   fontFamily?: string;
   style?: string;
+  markerStyle?: string;
   apiUrl?: string;
 }
 
@@ -78,6 +79,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   const partnerUserId = params.partnerUserId;
   const fontFamily = params.fontFamily || "Roboto";
   const style = params.style || "";
+  const markerStyle = params.markerStyle || "";
   const apiUrl = params.apiUrl || "https://api.mirmyfi.ru/v3";
 
   const css = `
@@ -327,11 +329,11 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     background-color: #fcc319;
     transition: all 0.2s;
   }
-  
-  ul .w-bank-item::marker {
-    color: var(--main-yellow)
-  }
 
+  ul .w-bank-item::marker {
+    color: var(--main-yellow);
+    ${markerStyle}
+  }
 
   `;
   const html = `
@@ -361,6 +363,10 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   <input type="range" min="1" max="50000" value="1" class="w-slider w-sum" id="myRange" />
   <div class="w-sum w-slider-active-portion"></div>
 </div>
+
+<ul>
+<li class='w-bank-item'>test</li><li class='w-bank-item'>test</li>
+</ul>
 
 
 <div class="w-field-wrap">
