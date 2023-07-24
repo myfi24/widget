@@ -5,6 +5,7 @@ interface IWidgetParams {
     partnerUserId: string;
     fontFamily?: string;
     style?: string;
+    markerStyle?: string;
     apiUrl?: string;
 }
 export default function createMYFIWidget(params?: IWidgetParams): void;
