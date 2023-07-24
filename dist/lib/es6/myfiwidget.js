@@ -367,7 +367,7 @@ export default function createMYFIWidget(params) {
                         data = _d.sent();
                         banks = data.map(function (item) { return item.to_company.name_clear; });
                         resetForm();
-                        banksUl = banks.map(function (item) { return "<li class=\"w-bank-item\">".concat(item, "</li>"); });
+                        banksUl = banks.map(function (item) { return "<li class=\"w-bank-item\">".concat(item, "</li>"); }).join("");
                         wrapper.querySelector(".w-agreement-wrap").innerHTML = "<p>\u0412\u0430\u0448\u0430 \u0437\u0430\u044F\u0432\u043A\u0430 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0430 \u0432: <ul>".concat(banksUl, "</ul> \u0412 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0435\u0435 \u0432\u0440\u0435\u043C\u044F \u0441 \u0432\u0430\u043C\u0438 \u0441\u0432\u044F\u0436\u0443\u0442\u0441\u044F \u043C\u0435\u043D\u0435\u0434\u0436\u0435\u0440\u044B \u0431\u0430\u043D\u043A\u043E\u0432.</p>");
                         wrapper.querySelector(".w-submit").outerHTML = "";
                         return [3 /*break*/, 6];
