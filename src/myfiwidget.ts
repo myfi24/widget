@@ -364,10 +364,6 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   <div class="w-sum w-slider-active-portion"></div>
 </div>
 
-<ul>
-<li class='w-bank-item'>test</li><li class='w-bank-item'>test</li>
-</ul>
-
 
 <div class="w-field-wrap">
   <span class="w-field-name">Фамилия*</span>
