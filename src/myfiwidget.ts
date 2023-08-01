@@ -335,6 +335,13 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     ${markerStyle}
   }
 
+  .w-success-msg {
+    font-size: 16px;
+    display: flex;
+    align-items: baseline;
+    padding: 3px 0;
+  }
+
   `;
   const html = `
 <div class="w-container">
@@ -396,7 +403,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 <input type="checkbox" class="w-checkbox" id="agree2" name="agree2" value="true" />
 <label class="w-agreement" for="agree2"
   ><span
-    >Настоящим, в соответствии со ст. 9 Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных», Я выражаю свое согласие ООО «Майфи», ИНН 7702454664, на обработку и дальнейшую передачу в адрес кредитных организаций, указанных в электронной заявке персональных данных и направляемых мною в процессе рассмотрения электронной заявки документах подтверждаю, что даю такое согласие свободно, своей волей и в своем интересе. Согласие дается мной, для целей рассмотрения кредитной организацией вопросов о возможности предоставления мне кредитных продуктов.</label
+    >Настоящим, в соответствии со ст. 9 Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных», Я выражаю свое согласие ООО «Майфи», ИНН 7702454664, на обработку и дальнейшую передачу в адрес кредитных организаций, указанных в электронной заявке персональных данных и направляемых мною в процессе рассмотрения электронной заявки документах подтверждаю, что даю такое согласие свободно, своей волей и в своем интересе. Согласие дается мной, для целей рассмотрения кредитной организацией вопросов о возможности предоставления мне кредитных продуктов.</span></label
 >
 <input type="checkbox" class="w-checkbox" id="agree3" name="agree3" value="true" />
 <label class="w-agreement" for="agree3"
@@ -569,6 +576,13 @@ ${css}
     "Разрешены только числовые символы. Длина ИНН 10 или 12 цифр."
   );
 
+  const getValueWithMonths = (value: number) => {
+    let suffix = "";
+    if (value % 10 > 1 && value % 10 < 5) suffix = "а";
+    if (value % 10 >= 5 || value % 10 === 0 || (value > 10 && value < 15)) suffix = "ев";
+    return value + " месяц" + suffix;
+  };
+
   function handleTermSliderChange(e) {
     const value = e.target.value;
     const min = parseInt(e.target.getAttribute("min"));
@@ -581,10 +595,7 @@ ${css}
 
     const fraction = percentageStep * ((value - min) * valueStep);
 
-    let suffix = "";
-    if (value % 10 > 1 && value % 10 < 5) suffix = "а";
-    if (value % 10 >= 5 || value % 10 === 0 || (value > 10 && value < 15)) suffix = "ев";
-    termInput.value = value + " месяц" + suffix;
+    termInput.value = getValueWithMonths(value);
     termSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
   }
 
@@ -723,13 +734,18 @@ ${css}
 
       resetForm();
       const banksUl = banks.map((item: string) => `<li class="w-bank-item">${item}</li>`).join("");
-      wrapper.querySelector(
-        ".w-agreement-wrap"
-      ).innerHTML = `<p>Ваша заявка отправлена в: <ul>${banksUl}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>`;
+      wrapper.querySelector(".w-agreement-wrap").innerHTML = `<h2>Уважаемый ${values.first_name}.</h2>
+      <p class="w-success-msg">Вами подана заявка на получение кредита на сумму ${values.amount} рублей на срок ${getValueWithMonths(
+        values.term
+      )}. Ваша заявка отправлена в: <ul>${banksUl}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>`;
+      wgrid.outerHTML = "";
       wrapper.querySelector(".w-submit").outerHTML = "";
     } catch (e) {
-      console.log(e);
-      alert(e.response?.data?.message ?? e.message);
+      if (!!e.message && e.message.trim() === "value is not a valid email address") {
+        alert("Недействительный адрес электронной почты");
+      } else {
+        alert(e.response?.data?.message ?? e.message);
+      }
     }
   }
 }
