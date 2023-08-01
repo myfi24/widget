@@ -734,7 +734,7 @@ ${css}
 
       resetForm();
       const banksUl = banks.map((item: string) => `<li class="w-bank-item">${item}</li>`).join("");
-      wrapper.querySelector(".w-agreement-wrap").innerHTML = `<h2>Уважаемый ${values.first_name}.</h2>
+      wrapper.querySelector(".w-agreement-wrap").innerHTML = `<h2>Уважаемый, ${values.first_name}.</h2>
       <p class="w-success-msg">Вами подана заявка на получение кредита на сумму ${values.amount} рублей на срок ${getValueWithMonths(
         values.term
       )}. Ваша заявка отправлена в: <ul>${banksUl}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>`;
