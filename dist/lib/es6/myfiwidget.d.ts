@@ -1,3 +1,7 @@
+interface IAgreement {
+    label: string;
+    url?: string;
+}
 interface IWidgetParams {
     container?: string;
     inn?: string;
@@ -5,7 +9,9 @@ interface IWidgetParams {
     partnerUserId: string;
     fontFamily?: string;
     style?: string;
+    markerStyle?: string;
     apiUrl?: string;
+    agreements?: Array<IAgreement>;
 }
 export default function createMYFIWidget(params?: IWidgetParams): void;
 export {};
