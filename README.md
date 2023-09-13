@@ -54,3 +54,18 @@ params: {
 - `agreements` - массив объектов настраивающих чекбоксы соглашений на форме заявке.
   - `label` - подпись чекбокса.
   - `url` - ссылка на документ (если требуется ознакомить заявителя).
+
+## Пример вызова
+
+```
+ myfiwidget({
+        partnerUserId: "745357c3-9fa5-4b28-xxxx-xxxxxxxxxxxx",
+        partnerCompanyId: "c6654a23-bdd4-4d3b-xxxx-xxxxxxxxxxxx",
+        container: "#widget-container-id",
+        inn: "0123456789",
+        fontFamily: "Roboto",
+        style: "padding: 10; margin: 10",
+        markerStyle: "color: red; content: '+'; font-size: 1.2em;",
+        apiUrl: "https://api.mirmyfi.ru/v3"
+      });
+```
