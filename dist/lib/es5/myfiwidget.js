@@ -153,7 +153,7 @@ function createMYFIWidget(params) {
                 label.htmlFor = checkbox.id;
                 if (checkboxInfo.url && checkboxInfo.url.length > 0) {
                     label.innerHTML =
-                        "<a class='w-link' href=".concat(checkboxInfo.url, ">") + checkboxInfo.label + "</a>";
+                        "<a class='w-link' href=".concat(checkboxInfo.url, " target=\"_blank\" rel=\"nofollow\">") + checkboxInfo.label + "</a>";
                 }
                 else {
                     label.innerHTML = checkboxInfo.label;
