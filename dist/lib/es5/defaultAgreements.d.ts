@@ -1,7 +1,4 @@
-export declare const defaultAgreements: () => ({
-    label: string;
-    url?: undefined;
-} | {
+export declare const defaultAgreements: () => {
     label: string;
     url: string;
-})[];
+}[];

@@ -5,6 +5,18 @@ function numberWithSpaces(x: number) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+function onDomContentLoaded() {
+  return new Promise<void>((resolve) => {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        resolve();
+      });
+    } else {
+      resolve();
+    }
+  });
+}
+
 function setInputFilter(textbox: Element, inputFilter: (value: string) => boolean, errMsg: string) {
   [
     "input",
@@ -113,6 +125,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   const markerStyle = params.markerStyle || "";
   const apiUrl = params.apiUrl || "https://api.mirmyfi.ru/v3";
   const checkboxes = params.agreements || defaultAgreements();
+  let checkboxesCreated = false;
 
   const css = `
   :root {
@@ -435,7 +448,6 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 <div class="w-agreement-wrap">
 </div>
 
-
 <button class="w-submit disabled">Отправить</button>
 
 <link href="https://fonts.cdnfonts.com/css/roboto" rel="stylesheet" />
@@ -455,36 +467,38 @@ ${css}
 </style></div>
 `;
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const agreementWrap = document.querySelector(".w-agreement-wrap");
+  (async function () {
+    await onDomContentLoaded();
+    if (!checkboxesCreated) {
+      const agreementWrap = document.querySelector(".w-agreement-wrap");
+      if (agreementWrap) {
+        checkboxes.forEach((checkboxInfo, index) => {
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = "agree" + `${index + 1}`;
+          checkbox.name = "agree" + `${index + 1}`;
+          checkbox.value = "true";
+          checkbox.className = "w-checkbox";
 
-    if (agreementWrap) {
-      checkboxes.forEach((checkboxInfo, index) => {
-        const checkbox = document.createElement("input");
+          const label = document.createElement("label");
+          label.htmlFor = checkbox.id;
 
-        checkbox.type = "checkbox";
-        checkbox.id = "agree" + `${index + 1}`;
-        checkbox.name = "agree" + `${index + 1}`;
-        checkbox.value = "true";
-        checkbox.className = "w-checkbox";
+          if (checkboxInfo.url !== undefined && checkboxInfo.url.length > 0) {
+            label.innerHTML =
+              `<a class="w-link" href="${checkboxInfo.url}" target="_blank" rel="nofollow">` + checkboxInfo.label + "</a>";
+          } else {
+            label.innerHTML = checkboxInfo.label;
+          }
 
-        const label = document.createElement("label");
-        label.htmlFor = checkbox.id;
+          label.className = "w-agreement";
 
-        if (checkboxInfo.url && checkboxInfo.url.length > 0) {
-          label.innerHTML =
-            `<a class='w-link' href=${checkboxInfo.url} target="_blank" rel="nofollow">` + checkboxInfo.label + "</a>";
-        } else {
-          label.innerHTML = checkboxInfo.label;
-        }
-
-        label.className = "w-agreement";
-
-        agreementWrap.appendChild(checkbox);
-        agreementWrap.appendChild(label);
-      });
+          agreementWrap.appendChild(checkbox);
+          agreementWrap.appendChild(label);
+        });
+        checkboxesCreated = true;
+      }
     }
-  });
+  })();
 
   const wrapper = document.querySelector(container);
 
@@ -518,7 +532,6 @@ ${css}
       }
     })
   );
-
   phoneInput.addEventListener("input", function () {
     const value = this.value.replaceAll(" ", "");
     if (value.length < 15) {
@@ -614,7 +627,9 @@ ${css}
 
   const submitBtn: HTMLInputElement = wcontainer.querySelector(".w-submit")!;
 
-  document.addEventListener("DOMContentLoaded", function () {
+  (async function () {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await onDomContentLoaded();
     const agreements: Array<HTMLInputElement> = Array.from(
       wcontainer.querySelectorAll(".w-checkbox")
     );
@@ -728,7 +743,7 @@ ${css}
         }
       }
     }
-  });
+  })();
 
   setInputFilterWithWhitespaces(
     sumInput,
@@ -755,8 +770,7 @@ ${css}
     if (value % 10 >= 5 || value % 10 === 0 || (value > 10 && value < 15)) suffix = "ев";
     return value + " месяц" + suffix;
   };
-  {
-  }
+
   function handleTermSliderChange(e) {
     const value = e.target.value;
     const min = parseInt(e.target.getAttribute("min"));
@@ -791,7 +805,6 @@ ${css}
 
   function handleSumInputChange(e: InputEvent) {
     const value = (e.target as HTMLInputElement).value.replaceAll(" ", "");
-
     const steps = parseInt(sumSlider.getAttribute("max")) - parseInt(sumSlider.getAttribute("min"));
     const valueStep = (parseInt(sumSlider.getAttribute("max")) - 1) / steps;
     const percentageStep = 100 / steps;
