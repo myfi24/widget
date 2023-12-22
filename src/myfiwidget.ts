@@ -1,133 +1,139 @@
-import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
-import { defaultAgreements } from "./defaultAgreements";
+import {AsYouType, isValidPhoneNumber} from "libphonenumber-js";
+import {defaultAgreements} from "./defaultAgreements";
 
 function numberWithSpaces(x: number) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 function onDomContentLoaded() {
-  return new Promise<void>((resolve) => {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => {
-        resolve();
-      });
-    } else {
-      resolve();
-    }
-  });
+    return new Promise<void>((resolve) => {
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", () => {
+                resolve();
+            });
+        } else {
+            resolve();
+        }
+    });
 }
 
 function setInputFilter(textbox: Element, inputFilter: (value: string) => boolean, errMsg: string) {
-  [
-    "input",
-    "keydown",
-    "keyup",
-    "mousedown",
-    "mouseup",
-    "select",
-    "contextmenu",
-    "drop",
-    "focusout",
-  ].forEach(function (event) {
-    textbox.addEventListener(event, function (e) {
-      if (inputFilter(this.value)) {
-        // Accepted value.
-        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
-          this.classList.remove("input-error");
-          this.setCustomValidity("");
-        }
+    [
+        "input",
+        "keydown",
+        "keyup",
+        "mousedown",
+        "mouseup",
+        "select",
+        "contextmenu",
+        "drop",
+        "focusout",
+    ].forEach(function (event) {
+        textbox.addEventListener(event, function (e) {
+            if (inputFilter(this.value)) {
+                // Accepted value.
+                if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                    this.classList.remove("input-error");
+                    this.setCustomValidity("");
+                }
 
-        this.oldValue = this.value;
-        this.oldSelectionStart = this.selectionStart;
-        this.oldSelectionEnd = this.selectionEnd;
-      } else if (this.hasOwnProperty("oldValue")) {
-        // Rejected value: restore the previous one.
-        this.classList.add("input-error");
-        this.setCustomValidity(errMsg);
-        this.reportValidity();
-        this.value = this.oldValue;
-        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-      } else {
-        // Rejected value: nothing to restore.
-        this.value = "";
-      }
+                this.oldValue = this.value;
+                this.oldSelectionStart = this.selectionStart;
+                this.oldSelectionEnd = this.selectionEnd;
+            } else if (this.hasOwnProperty("oldValue")) {
+                // Rejected value: restore the previous one.
+                this.classList.add("input-error");
+                this.setCustomValidity(errMsg);
+                this.reportValidity();
+                this.value = this.oldValue;
+                this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+            } else {
+                // Rejected value: nothing to restore.
+                this.value = "";
+            }
+        });
     });
-  });
 }
 
 function setInputFilterWithWhitespaces(
-  textbox: Element,
-  inputFilter: (value: string) => boolean,
-  errMsg: string
+    textbox: Element,
+    inputFilter: (value: string) => boolean,
+    errMsg: string
 ) {
-  [
-    "input",
-    "keydown",
-    "keyup",
-    "mousedown",
-    "mouseup",
-    "select",
-    "contextmenu",
-    "drop",
-    "focusout",
-  ].forEach(function (event) {
-    textbox.addEventListener(event, function (e) {
-      if (inputFilter(this.value)) {
-        // Accepted value.
-        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
-          this.classList.remove("input-error");
-          this.setCustomValidity("");
-        }
+    [
+        "input",
+        "keydown",
+        "keyup",
+        "mousedown",
+        "mouseup",
+        "select",
+        "contextmenu",
+        "drop",
+        "focusout",
+    ].forEach(function (event) {
+        textbox.addEventListener(event, function (e) {
+            if (inputFilter(this.value)) {
+                // Accepted value.
+                if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                    this.classList.remove("input-error");
+                    this.setCustomValidity("");
+                }
 
-        this.value = numberWithSpaces(this.value.replaceAll(" ", ""));
-        this.oldValue = numberWithSpaces(this.value.replaceAll(" ", ""));
-        this.oldSelectionStart = this.selectionStart;
-        this.oldSelectionEnd = this.selectionEnd;
-      } else if (this.hasOwnProperty("oldValue")) {
-        // Rejected value: restore the previous one.
-        this.classList.add("input-error");
-        this.setCustomValidity(errMsg);
-        this.reportValidity();
-        this.value = this.oldValue;
-        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-      } else {
-        // Rejected value: nothing to restore.
-        this.value = "";
-      }
+                this.value = numberWithSpaces(this.value.replaceAll(" ", ""));
+                this.oldValue = numberWithSpaces(this.value.replaceAll(" ", ""));
+                this.oldSelectionStart = this.selectionStart;
+                this.oldSelectionEnd = this.selectionEnd;
+            } else if (this.hasOwnProperty("oldValue")) {
+                // Rejected value: restore the previous one.
+                this.classList.add("input-error");
+                this.setCustomValidity(errMsg);
+                this.reportValidity();
+                this.value = this.oldValue;
+                this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+            } else {
+                // Rejected value: nothing to restore.
+                this.value = "";
+            }
+        });
     });
-  });
 }
 
 interface IAgreement {
-  label: string;
-  url?: string;
+    label: string;
+    url?: string;
 }
 
 interface IWidgetParams {
-  container?: string;
-  inn?: string;
-  partnerCompanyId: string;
-  partnerUserId: string;
-  fontFamily?: string;
-  style?: string;
-  markerStyle?: string;
-  apiUrl?: string;
-  agreements?: Array<IAgreement>;
+    container?: string;
+    inn?: string;
+    partnerCompanyId: string;
+    partnerUserId: string;
+    fontFamily?: string;
+    style?: string;
+    markerStyle?: string;
+    apiUrl?: string;
+    agreements?: Array<IAgreement>;
+    successMessage: string;
 }
 
 export default function createMYFIWidget(params?: IWidgetParams) {
-  const container = params.container || ".w-wrap";
-  const inn = params.inn || "";
-  const partnerCompanyId = params.partnerCompanyId;
-  const partnerUserId = params.partnerUserId;
-  const fontFamily = params.fontFamily || "Roboto";
-  const style = params.style || "";
-  const markerStyle = params.markerStyle || "";
-  const apiUrl = params.apiUrl || "https://api.mirmyfi.ru/v3";
-  const checkboxes = params.agreements || defaultAgreements();
-  let checkboxesCreated = false;
+    const container = params.container || ".w-wrap";
+    const inn = params.inn || "";
+    const partnerCompanyId = params.partnerCompanyId;
+    const partnerUserId = params.partnerUserId;
+    const fontFamily = params.fontFamily || "Roboto";
+    const style = params.style || "";
+    const markerStyle = params.markerStyle || "";
+    const apiUrl = params.apiUrl || "https://api.mirmyfi.ru/v3";
+    const checkboxes = params.agreements || defaultAgreements();
+    const defaultSuccessMessage: string = `<h2>Уважаем{sextype} {partOfName},</h2> <p class="w-success-msg">
+Вы подали заявку на получение кредита в размере {amount} ₽ на срок {term}. Ваша заявка отправлена в:<br/> <ul>{banks}</ul> 
+В ближайшее время с вами свяжутся менеджеры банков.</p>`
+    const successMessage = params.successMessage || defaultSuccessMessage;
 
-  const css = `
+    let checkboxesCreated = false;
+
+    const css = `
   :root {
     --bg-gray: #ecf1f7;
     --bg-active: #ffffff;
@@ -265,7 +271,6 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 
   }
 
-  
   .w-slider::-moz-range-thumb {
     width: 14px;
     height: 14px;
@@ -374,6 +379,10 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     background-color: #fcc319;
     transition: all 0.2s;
   }
+  
+  ul li.w-bank-item {
+    padding-left: 1ch;  
+  }
 
   ul .w-bank-item::marker {
     color: var(--main-yellow);
@@ -388,7 +397,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   }
 
   `;
-  const html = `
+    const html = `
 <div class="w-container">
 <div class="w-grid">
 
@@ -467,383 +476,411 @@ ${css}
 </style></div>
 `;
 
-  (async function () {
-    await onDomContentLoaded();
-    if (!checkboxesCreated) {
-      const agreementWrap = document.querySelector(".w-agreement-wrap");
-      if (agreementWrap) {
-        checkboxes.forEach((checkboxInfo, index) => {
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.id = "agree" + `${index + 1}`;
-          checkbox.name = "agree" + `${index + 1}`;
-          checkbox.value = "true";
-          checkbox.className = "w-checkbox";
+    (async function () {
+        await onDomContentLoaded();
+        if (!checkboxesCreated) {
+            const agreementWrap = document.querySelector(".w-agreement-wrap");
+            if (agreementWrap) {
+                checkboxes.forEach((checkboxInfo, index) => {
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = "agree" + `${index + 1}`;
+                    checkbox.name = "agree" + `${index + 1}`;
+                    checkbox.value = "true";
+                    checkbox.className = "w-checkbox";
 
-          const label = document.createElement("label");
-          label.htmlFor = checkbox.id;
+                    const label = document.createElement("label");
+                    label.htmlFor = checkbox.id;
 
-          if (checkboxInfo.url !== undefined && checkboxInfo.url.length > 0) {
-            label.innerHTML =
-              `<a class="w-link" href="${checkboxInfo.url}" target="_blank" rel="nofollow">` + checkboxInfo.label + "</a>";
-          } else {
-            label.innerHTML = checkboxInfo.label;
-          }
+                    if (checkboxInfo.url !== undefined && checkboxInfo.url.length > 0) {
+                        label.innerHTML =
+                            `<a class="w-link" href="${checkboxInfo.url}" target="_blank" rel="nofollow">` + checkboxInfo.label + "</a>";
+                    } else {
+                        label.innerHTML = checkboxInfo.label;
+                    }
 
-          label.className = "w-agreement";
+                    label.className = "w-agreement";
 
-          agreementWrap.appendChild(checkbox);
-          agreementWrap.appendChild(label);
-        });
-        checkboxesCreated = true;
-      }
+                    agreementWrap.appendChild(checkbox);
+                    agreementWrap.appendChild(label);
+                });
+                checkboxesCreated = true;
+            }
+        }
+    })();
+
+    const wrapper = document.querySelector(container);
+
+    if (!wrapper) {
+        console.log("Нет контейнера");
+        return;
     }
-  })();
-
-  const wrapper = document.querySelector(container);
-
-  if (!wrapper) {
-    console.log("Нет контейнера");
-    return;
-  }
-  if (!partnerUserId || !partnerCompanyId) {
-    console.log("Не переданы обязательные параметры");
-    return;
-  }
-  wrapper.innerHTML = html;
-
-  const wcontainer: HTMLElement = document.querySelector(".w-container")!;
-
-  const wgrid: HTMLElement = wcontainer.querySelector(".w-grid");
-
-  const phoneInput: HTMLInputElement = wcontainer.querySelector(".w-phone")!;
-
-  const select: HTMLSpanElement = wcontainer.querySelector(".w-selected")!;
-  const dropdown: HTMLUListElement = wcontainer.querySelector(".w-dropdown")!;
-  // let selectActive: boolean = true;
-
-  ["DOMContentLoaded", "resize", "load"].forEach((item) =>
-    window.addEventListener(item, function () {
-      const width = wcontainer.offsetWidth;
-      if (width < 480) {
-        wgrid.style["grid-template-columns"] = "1fr";
-      } else {
-        wgrid.style["grid-template-columns"] = "1fr 1fr";
-      }
-    })
-  );
-  phoneInput.addEventListener("input", function () {
-    const value = this.value.replaceAll(" ", "");
-    if (value.length < 15) {
-      this.value = new AsYouType().input(this.value);
-    } else this.value = value.substring(0, value.length - 1);
-
-    if (!this.value) {
-      this.value = "+";
+    if (!partnerUserId || !partnerCompanyId) {
+        console.log("Не переданы обязательные параметры");
+        return;
     }
-  });
+    wrapper.innerHTML = html;
 
-  // select.addEventListener("click", function () {
-  //   console.log("selectActive", selectActive);
-  //   if (selectActive) {
-  //     dropdown.classList.add("w-active");
-  //     select.classList.add("w-active");
-  //   } else {
-  //     dropdown.classList.remove("w-active");
-  //     select.classList.remove("w-active");
-  //   }
-  //   selectActive = !selectActive;
-  // });
+    const wcontainer: HTMLElement = document.querySelector(".w-container")!;
 
-  // dropdown.addEventListener("click", function (e: MouseEvent) {
-  //   const value = (e.target as HTMLSpanElement).innerHTML;
-  //   console.log("value", value);
+    const wgrid: HTMLElement = wcontainer.querySelector(".w-grid");
 
-  //   select.innerText = value;
-  //   selectActive = !selectActive;
-  //   dropdown.classList.remove("w-active");
-  //   select.classList.remove("w-active");
-  // });
+    const phoneInput: HTMLInputElement = wcontainer.querySelector(".w-phone")!;
 
-  // document.addEventListener("click", function (e: MouseEvent) {
-  //   const target = e.target as HTMLElement;
-  //   const clickAway = target !== dropdown && target !== select;
-  //   if (!!selectActive && clickAway) {
-  //     console.log("selectActive", selectActive);
-  //     console.log("fired");
-  //   }
-  // });
+    const select: HTMLSpanElement = wcontainer.querySelector(".w-selected")!;
+    const dropdown: HTMLUListElement = wcontainer.querySelector(".w-dropdown")!;
+    // let selectActive: boolean = true;
 
-  const digitsWithWhitespace = /^[0-9\b]|\t+$/;
-  const digits = /^[0-9\b]+$/;
-  const email = /.+@.+\.[A-Za-z]+$/;
+    ["DOMContentLoaded", "resize", "load"].forEach((item) =>
+        window.addEventListener(item, function () {
+            const width = wcontainer.offsetWidth;
+            if (width < 480) {
+                wgrid.style["grid-template-columns"] = "1fr";
+            } else {
+                wgrid.style["grid-template-columns"] = "1fr 1fr";
+            }
+        })
+    );
+    phoneInput.addEventListener("input", function () {
+        const value = this.value.replaceAll(" ", "");
+        if (value.length < 15) {
+            this.value = new AsYouType().input(this.value);
+        } else this.value = value.substring(0, value.length - 1);
 
-  const multiplier = 1e3;
+        if (!this.value) {
+            this.value = "+";
+        }
+    });
 
-  const termSlider = wcontainer.querySelector(".w-slider.w-term");
-  !!termSlider && termSlider.addEventListener("input", handleTermSliderChange);
-  const termSliderActivePart: HTMLElement = wcontainer.querySelector(
-    ".w-term .w-slider-active-portion"
-  );
+    // select.addEventListener("click", function () {
+    //   console.log("selectActive", selectActive);
+    //   if (selectActive) {
+    //     dropdown.classList.add("w-active");
+    //     select.classList.add("w-active");
+    //   } else {
+    //     dropdown.classList.remove("w-active");
+    //     select.classList.remove("w-active");
+    //   }
+    //   selectActive = !selectActive;
+    // });
 
-  const termInput: HTMLInputElement = wcontainer.querySelector(".w-input.w-term")!;
-  termInput.value = "3 месяца";
+    // dropdown.addEventListener("click", function (e: MouseEvent) {
+    //   const value = (e.target as HTMLSpanElement).innerHTML;
+    //   console.log("value", value);
 
-  const sumSlider: HTMLInputElement = wcontainer.querySelector(".w-slider.w-sum");
-  !!sumSlider && sumSlider.addEventListener("input", handleSumSliderChange);
-  const sumSliderActivePart: HTMLInputElement = wcontainer.querySelector(
-    ".w-sum .w-slider-active-portion"
-  );
+    //   select.innerText = value;
+    //   selectActive = !selectActive;
+    //   dropdown.classList.remove("w-active");
+    //   select.classList.remove("w-active");
+    // });
 
-  const firstnameInput: HTMLInputElement = wcontainer.querySelector(".w-1stname")!;
-  const secondnameInput: HTMLInputElement = wcontainer.querySelector(".w-2ndname")!;
-  const lastnameInput: HTMLInputElement = wcontainer.querySelector(".w-lastname")!;
-  const innInput: HTMLInputElement = wcontainer.querySelector(".w-inn")!;
-  innInput.value = inn;
+    // document.addEventListener("click", function (e: MouseEvent) {
+    //   const target = e.target as HTMLElement;
+    //   const clickAway = target !== dropdown && target !== select;
+    //   if (!!selectActive && clickAway) {
+    //     console.log("selectActive", selectActive);
+    //     console.log("fired");
+    //   }
+    // });
 
-  const emailInput: HTMLInputElement = wcontainer.querySelector(".w-email")!;
+    const digitsWithWhitespace = /^[0-9\b]|\t+$/;
+    const digits = /^[0-9\b]+$/;
+    const email = /.+@.+\.[A-Za-z]+$/;
 
-  const sumInput: HTMLInputElement = wcontainer.querySelector(".w-input.w-sum")!;
-  !!sumInput && sumInput.addEventListener("input", handleSumInputChange);
+    const multiplier = 1e3;
 
-  [
-    sumInput,
-    firstnameInput,
-    secondnameInput,
-    lastnameInput,
-    innInput,
-    phoneInput,
-    emailInput,
-  ].forEach((item) => item.addEventListener("focus", handleFocusChange));
-  [
-    sumInput,
-    firstnameInput,
-    secondnameInput,
-    lastnameInput,
-    innInput,
-    phoneInput,
-    emailInput,
-  ].forEach((item) => item.addEventListener("blur", handleFocusChange));
-
-  const submitBtn: HTMLInputElement = wcontainer.querySelector(".w-submit")!;
-
-  (async function () {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    await onDomContentLoaded();
-    const agreements: Array<HTMLInputElement> = Array.from(
-      wcontainer.querySelectorAll(".w-checkbox")
+    const termSlider = wcontainer.querySelector(".w-slider.w-term");
+    !!termSlider && termSlider.addEventListener("input", handleTermSliderChange);
+    const termSliderActivePart: HTMLElement = wcontainer.querySelector(
+        ".w-term .w-slider-active-portion"
     );
 
-    if (agreements.length > 0) {
-      agreements.forEach((el) =>
-        el.addEventListener("change", function () {
-          const hasAgreedToAll = agreements.every((checkbox) => checkbox.checked);
-          if (!hasAgreedToAll) {
-            submitBtn.classList.add("disabled");
-          } else {
-            submitBtn.classList.remove("disabled");
-          }
-        })
-      );
-    }
-    submitBtn.addEventListener("click", handleSubmit);
-    async function handleSubmit() {
-      try {
-        if (!lastnameInput.value) {
-          throw new Error("Заполните поле фамилии");
-        }
-        if (!firstnameInput.value) {
-          throw new Error("Заполните поле имени");
-        }
-        if (!innInput.value) {
-          throw new Error("Заполните поле ИНН");
-        }
-        if (!sumInput.value) {
-          throw new Error("Заполните поле суммы");
-        }
-        if (parseInt(sumInput.value.replaceAll(" ", "")) < 1e4) {
-          throw new Error("Сумма должна быть не менее 10 000 ₽");
-        }
-        const trimmedInn = innInput.value.toString().replaceAll(" ", "");
-        if (!(trimmedInn.length === 10 || trimmedInn.length === 12)) {
-          throw new Error("ИНН должен состоять из 10 или 12 цифр");
-        }
-        if (phoneInput.value === "+") {
-          throw new Error("Заполните поле телефона");
-        }
-
-        if (!isValidPhoneNumber(phoneInput.value)) {
-          throw new Error("Некорректный формат номера телефона");
-        }
-        if (!emailInput.value) {
-          throw new Error("Заполните поле электронной почты");
-        }
-        if (!email.test(emailInput.value)) {
-          throw new Error("Некорректный формат электронной почты");
-        }
-
-        const values = {
-          agreements: {
-            bki: false,
-            personal: true,
-            sharing: true,
-          },
-          amount: parseInt(sumInput.value.replaceAll(" ", "")),
-          email: emailInput.value,
-          inn: trimmedInn,
-          first_name: firstnameInput.value,
-          second_name: secondnameInput.value,
-          last_name: lastnameInput.value,
-          partner_user_id: partnerUserId,
-          partner_company_id: partnerCompanyId,
-          phone: phoneInput.value.replaceAll(" ", ""),
-          service_code: "CREDIT",
-          term: parseInt(termInput.value),
-        };
-
-        const res = await fetch(`${apiUrl}/widget/request/`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        });
-
-        if (res.status !== 200) {
-          const detail = (await res.json()).detail;
-          let error = "";
-          if (Array.isArray(detail)) {
-            detail.forEach((item) => (error += item.msg + "\n"));
-          } else {
-            error = detail;
-          }
-          throw new Error(error);
-        }
-
-        const data = await res.json();
-        const banks = data.map((item) => item.to_company.name_clear);
-
-        resetForm();
-        const banksUl = banks
-          .map((item: string) => `<li class="w-bank-item">${item}</li>`)
-          .join("");
-        wrapper.querySelector(".w-agreement-wrap").innerHTML = `<h2>Уважаемый, ${
-          values.first_name
-        }.</h2>
-        <p class="w-success-msg">Вами подана заявка на получение кредита на сумму ${
-          values.amount
-        } рублей на срок ${getValueWithMonths(
-          values.term
-        )}. Ваша заявка отправлена в: <ul>${banksUl}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>`;
-        wgrid.outerHTML = "";
-        wrapper.querySelector(".w-submit").outerHTML = "";
-      } catch (e) {
-        if (!!e.message && e.message.trim() === "value is not a valid email address") {
-          alert("Недействительный адрес электронной почты");
-        } else {
-          alert(e.response?.data?.message ?? e.message);
-        }
-      }
-    }
-  })();
-
-  setInputFilterWithWhitespaces(
-    sumInput,
-    function (value) {
-      return (
-        (digits.test(value.replaceAll(" ", "")) && parseInt(value.replaceAll(" ", "")) < 1e9) ||
-        !value.length
-      );
-    },
-    "Разрешены только числовые символы. Вручную можно ввести сумму до 1 млрд."
-  );
-
-  setInputFilter(
-    innInput,
-    function (value) {
-      return (digits.test(value) && value.replaceAll(" ", "").length < 13) || !value.length;
-    },
-    "Разрешены только числовые символы. Длина ИНН 10 или 12 цифр."
-  );
-
-  const getValueWithMonths = (value: number) => {
-    let suffix = "";
-    if (value % 10 > 1 && value % 10 < 5) suffix = "а";
-    if (value % 10 >= 5 || value % 10 === 0 || (value > 10 && value < 15)) suffix = "ев";
-    return value + " месяц" + suffix;
-  };
-
-  function handleTermSliderChange(e) {
-    const value = e.target.value;
-    const min = parseInt(e.target.getAttribute("min"));
-    const max = parseInt(e.target.getAttribute("max"));
-
-    const steps = max - min;
-
-    const valueStep = 1;
-    const percentageStep = 100 / steps;
-
-    const fraction = percentageStep * ((value - min) * valueStep);
-
-    termInput.value = getValueWithMonths(value);
-    termSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
-  }
-
-  function handleSumSliderChange(e: InputEvent) {
-    const value = (e.target as HTMLInputElement).value;
-    const steps =
-      parseInt((e.target as HTMLInputElement).getAttribute("max")) -
-      parseInt((e.target as HTMLInputElement).getAttribute("min"));
-
-    const valueStep = (parseInt((e.target as HTMLInputElement).getAttribute("max")) - 1) / steps;
-
-    const percentageStep = 100 / steps;
-
-    const fraction = percentageStep * ((parseInt(value) - 1) * valueStep);
-
-    sumSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
-    sumInput.value = `${numberWithSpaces(parseInt(value) * multiplier)}`;
-  }
-
-  function handleSumInputChange(e: InputEvent) {
-    const value = (e.target as HTMLInputElement).value.replaceAll(" ", "");
-    const steps = parseInt(sumSlider.getAttribute("max")) - parseInt(sumSlider.getAttribute("min"));
-    const valueStep = (parseInt(sumSlider.getAttribute("max")) - 1) / steps;
-    const percentageStep = 100 / steps;
-    const fraction = (percentageStep * (parseInt(value) - 1) * valueStep) / multiplier;
-
-    sumSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
-
-    const sliderValue = parseInt(value) / multiplier + 1;
-
-    sumSlider.value = `${sliderValue}`;
-  }
-
-  function handleFocusChange(e) {
-    let isFocused = document.activeElement === e.target;
-
-    let parent = e.target.parentElement;
-
-    if (![...parent.classList].includes("w-field-wrap"))
-      parent = parent.parentElement.parentElement;
-
-    if (isFocused) {
-      parent.classList.add("w-focused");
-      parent.querySelector(".w-field-name").classList.add("w-active");
-    } else {
-      parent.classList.remove("w-focused");
-      if (!parent.querySelector(".w-input").value) {
-        parent.querySelector(".w-field-name").classList.remove("w-active");
-      }
-    }
-  }
-
-  function resetForm() {
+    const termInput: HTMLInputElement = wcontainer.querySelector(".w-input.w-term")!;
     termInput.value = "3 месяца";
-    sumInput.value = "10 000";
-    firstnameInput.value = "";
-    secondnameInput.value = "";
-    lastnameInput.value = "";
-    innInput.value = "";
-    phoneInput.value = "+";
-    emailInput.value = "";
-  }
+
+    const sumSlider: HTMLInputElement = wcontainer.querySelector(".w-slider.w-sum");
+    !!sumSlider && sumSlider.addEventListener("input", handleSumSliderChange);
+    const sumSliderActivePart: HTMLInputElement = wcontainer.querySelector(
+        ".w-sum .w-slider-active-portion"
+    );
+
+    const firstnameInput: HTMLInputElement = wcontainer.querySelector(".w-1stname")!;
+    const secondnameInput: HTMLInputElement = wcontainer.querySelector(".w-2ndname")!;
+    const lastnameInput: HTMLInputElement = wcontainer.querySelector(".w-lastname")!;
+    const innInput: HTMLInputElement = wcontainer.querySelector(".w-inn")!;
+    innInput.value = inn;
+
+    const emailInput: HTMLInputElement = wcontainer.querySelector(".w-email")!;
+
+    const sumInput: HTMLInputElement = wcontainer.querySelector(".w-input.w-sum")!;
+    !!sumInput && sumInput.addEventListener("input", handleSumInputChange);
+
+    [
+        sumInput,
+        firstnameInput,
+        secondnameInput,
+        lastnameInput,
+        innInput,
+        phoneInput,
+        emailInput,
+    ].forEach((item) => item.addEventListener("focus", handleFocusChange));
+    [
+        sumInput,
+        firstnameInput,
+        secondnameInput,
+        lastnameInput,
+        innInput,
+        phoneInput,
+        emailInput,
+    ].forEach((item) => item.addEventListener("blur", handleFocusChange));
+
+    const submitBtn: HTMLInputElement = wcontainer.querySelector(".w-submit")!;
+
+    function formatNumberWithSpaces(summ) {
+        var numbersOnly = summ.replaceAll(" ", "");
+        return numbersOnly.replace(/\B(?=(?:\d{3})+(?!\d))/g, " ");
+    }
+
+    function determineSexType(fio) {
+        const femaleEndings = ['овна', 'евна', 'ична', 'ова', 'ева', 'ина', 'ая', 'яя', 'екая', 'цкая'];
+
+        function hasEnding(word, endings) {
+            return endings.some(ending => word.endsWith(ending));
+        }
+
+        const isFemale = hasEnding(fio[1], femaleEndings) || hasEnding(fio[2], femaleEndings);
+
+        return isFemale ? "ая" : "ый";
+    }
+
+    (async function () {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        await onDomContentLoaded();
+        const agreements: Array<HTMLInputElement> = Array.from(
+            wcontainer.querySelectorAll(".w-checkbox")
+        );
+
+        if (agreements.length > 0) {
+            agreements.forEach((el) =>
+                el.addEventListener("change", function () {
+                    const hasAgreedToAll = agreements.every((checkbox) => checkbox.checked);
+                    if (!hasAgreedToAll) {
+                        submitBtn.classList.add("disabled");
+                    } else {
+                        submitBtn.classList.remove("disabled");
+                    }
+                })
+            );
+        }
+        submitBtn.addEventListener("click", handleSubmit);
+
+        async function handleSubmit() {
+            try {
+                if (!lastnameInput.value) {
+                    throw new Error("Заполните поле фамилии");
+                }
+                if (!firstnameInput.value) {
+                    throw new Error("Заполните поле имени");
+                }
+                if (!innInput.value) {
+                    throw new Error("Заполните поле ИНН");
+                }
+                if (!sumInput.value) {
+                    throw new Error("Заполните поле суммы");
+                }
+                if (parseInt(sumInput.value.replaceAll(" ", "")) < 1e4) {
+                    throw new Error("Сумма должна быть не менее 10 000 ₽");
+                }
+                const trimmedInn = innInput.value.toString().replaceAll(" ", "");
+                if (!(trimmedInn.length === 10 || trimmedInn.length === 12)) {
+                    throw new Error("ИНН должен состоять из 10 или 12 цифр");
+                }
+                if (phoneInput.value === "+") {
+                    throw new Error("Заполните поле телефона");
+                }
+
+                if (!isValidPhoneNumber(phoneInput.value)) {
+                    throw new Error("Некорректный формат номера телефона");
+                }
+                if (!emailInput.value) {
+                    throw new Error("Заполните поле электронной почты");
+                }
+                if (!email.test(emailInput.value)) {
+                    throw new Error("Некорректный формат электронной почты");
+                }
+
+                const values = {
+                    agreements: {
+                        bki: false,
+                        personal: true,
+                        sharing: true,
+                    },
+                    amount: parseInt(sumInput.value.replaceAll(" ", "")),
+                    email: emailInput.value,
+                    inn: trimmedInn,
+                    first_name: firstnameInput.value,
+                    second_name: secondnameInput.value,
+                    last_name: lastnameInput.value,
+                    partner_user_id: partnerUserId,
+                    partner_company_id: partnerCompanyId,
+                    phone: phoneInput.value.replaceAll(" ", ""),
+                    service_code: "CREDIT",
+                    term: parseInt(termInput.value),
+                };
+
+                const res = await fetch(`${apiUrl}/widget/request/`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(values),
+                });
+
+                if (res.status !== 200) {
+                    const detail = (await res.json()).detail;
+                    let error = "";
+                    if (Array.isArray(detail)) {
+                        detail.forEach((item) => (error += item.msg + "\n"));
+                    } else {
+                        error = detail;
+                    }
+                    throw new Error(error);
+                }
+
+                const data = await res.json();
+                const banks = data.map((item) => item.to_company.name_clear);
+
+                const fio = [values.first_name, values.second_name, values.last_name];
+                const sexType = determineSexType(fio);
+
+                let userNames = fio.filter(e => e)
+                const partOfName = userNames.join(" ");
+                const amount = formatNumberWithSpaces(sumInput.value)
+                const term = getValueWithMonths(values.term)
+
+                resetForm();
+
+                const banksUl = banks
+                    .map((item: number) => `<li class="w-bank-item">${item}</li>`)
+                    .join("");
+                wrapper.querySelector(".w-agreement-wrap").innerHTML =
+                    successMessage.replace("{partOfName}", `${partOfName}`)
+                        .replace("{firstName}", `${values.first_name}`)
+                        .replace("{lastName}", `${values.last_name}`)
+                        .replace("{secondName}", `${values.second_name}`)
+                        .replace("{amount}", `${amount}`)
+                        .replace("{term}", `${term}`)
+                        .replace("{banks}", `${banksUl}`)
+                        .replace("{sextype}", `${sexType}`)
+                wgrid.outerHTML = "";
+                wrapper.querySelector(".w-submit").outerHTML = "";
+            } catch (e) {
+                if (!!e.message && e.message.trim() === "value is not a valid email address") {
+                    alert("Недействительный адрес электронной почты");
+                } else {
+                    alert(e.response?.data?.message ?? e.message);
+                }
+            }
+        }
+    })();
+
+    setInputFilterWithWhitespaces(
+        sumInput,
+        function (value) {
+            return (
+                (digits.test(value.replaceAll(" ", "")) && parseInt(value.replaceAll(" ", "")) < 1e9) ||
+                !value.length
+            );
+        },
+        "Разрешены только числовые символы. Вручную можно ввести сумму до 1 млрд."
+    );
+
+    setInputFilter(
+        innInput,
+        function (value) {
+            return (digits.test(value) && value.replaceAll(" ", "").length < 13) || !value.length;
+        },
+        "Разрешены только числовые символы. Длина ИНН 10 или 12 цифр."
+    );
+
+    const getValueWithMonths = (value: number) => {
+        let suffix = "";
+        if (value % 10 > 1 && value % 10 < 5) suffix = "а";
+        if (value % 10 >= 5 || value % 10 === 0 || (value > 10 && value < 15)) suffix = "ев";
+        return value + " месяц" + suffix;
+    };
+
+    function handleTermSliderChange(e) {
+        const value = e.target.value;
+        const min = parseInt(e.target.getAttribute("min"));
+        const max = parseInt(e.target.getAttribute("max"));
+
+        const steps = max - min;
+
+        const valueStep = 1;
+        const percentageStep = 100 / steps;
+
+        const fraction = percentageStep * ((value - min) * valueStep);
+
+        termInput.value = getValueWithMonths(value);
+        termSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
+    }
+
+    function handleSumSliderChange(e: InputEvent) {
+        const value = (e.target as HTMLInputElement).value;
+        const steps =
+            parseInt((e.target as HTMLInputElement).getAttribute("max")) -
+            parseInt((e.target as HTMLInputElement).getAttribute("min"));
+
+        const valueStep = (parseInt((e.target as HTMLInputElement).getAttribute("max")) - 1) / steps;
+
+        const percentageStep = 100 / steps;
+
+        const fraction = percentageStep * ((parseInt(value) - 1) * valueStep);
+
+        sumSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
+        sumInput.value = `${numberWithSpaces(parseInt(value) * multiplier)}`;
+    }
+
+    function handleSumInputChange(e: InputEvent) {
+        const value = (e.target as HTMLInputElement).value.replaceAll(" ", "");
+        const steps = parseInt(sumSlider.getAttribute("max")) - parseInt(sumSlider.getAttribute("min"));
+        const valueStep = (parseInt(sumSlider.getAttribute("max")) - 1) / steps;
+        const percentageStep = 100 / steps;
+        const fraction = (percentageStep * (parseInt(value) - 1) * valueStep) / multiplier;
+
+        sumSliderActivePart.style.width = `calc(${fraction}% - ${fraction / 100} * 14px)`;
+
+        const sliderValue = parseInt(value) / multiplier + 1;
+
+        sumSlider.value = `${sliderValue}`;
+    }
+
+    function handleFocusChange(e) {
+        let isFocused = document.activeElement === e.target;
+
+        let parent = e.target.parentElement;
+
+        if (![...parent.classList].includes("w-field-wrap"))
+            parent = parent.parentElement.parentElement;
+
+        if (isFocused) {
+            parent.classList.add("w-focused");
+            parent.querySelector(".w-field-name").classList.add("w-active");
+        } else {
+            parent.classList.remove("w-focused");
+            if (!parent.querySelector(".w-input").value) {
+                parent.querySelector(".w-field-name").classList.remove("w-active");
+            }
+        }
+    }
+
+    function resetForm() {
+        termInput.value = "3 месяца";
+        sumInput.value = "10 000";
+        firstnameInput.value = "";
+        secondnameInput.value = "";
+        lastnameInput.value = "";
+        innInput.value = "";
+        phoneInput.value = "+";
+        emailInput.value = "";
+    }
 }

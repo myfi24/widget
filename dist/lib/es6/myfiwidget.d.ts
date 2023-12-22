@@ -12,6 +12,7 @@ interface IWidgetParams {
     markerStyle?: string;
     apiUrl?: string;
     agreements?: Array<IAgreement>;
+    successMessage: string;
 }
 export default function createMYFIWidget(params?: IWidgetParams): void;
 export {};
