@@ -457,7 +457,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
 <div class="w-agreement-wrap">
 </div>
 
-<button class="w-submit disabled">Отправить</button>
+<button class="w-submit disabled" type="button">Отправить</button>
 
 <link href="https://fonts.cdnfonts.com/css/roboto" rel="stylesheet" />
 
