@@ -302,6 +302,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     grid-column: span 2;
     // width: 80%;
     margin: 30px auto;
+    line-height: 1.8em;
   }
   
   .w-checkbox {
