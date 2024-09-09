@@ -40,7 +40,8 @@ params: {
     label: string;
     url: string;
   }[];
-	successMessage?: string;
+  successMessage?: string;
+  tabls?: []string;
 }
 ```
 
@@ -56,6 +57,7 @@ params: {
   - `label` - подпись чекбокса.
   - `url` - ссылка на документ (если требуется ознакомить заявителя).
 - `successMessage` - Сообщение об успешной отправке заявки в банки *(не обязательный параметр)*.
+- `tabs` — Отображаемые вкладки, допускаются 2 значения: `loan` и/или `bank_guarantee`.
 
 ## Пример вызова
 
@@ -69,7 +71,8 @@ myfiwidget({
   style: "padding: 10; margin: 10",
   markerStyle: "color: red; content: '+'; font-size: 1.2em;",
   apiUrl: "https://api.mirmyfi.ru/v3",
-  successMessage: '<h2>Уважаем{sextype} {partOfName},</h2><p class="w-success-msg">Вы подали заявку на получение кредита в размере {amount} ₽ на срок {term}. Ваша заявка отправлена в:<br/> <ul>{banks}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>'
+  successMessage: '<h2>Уважаем{sextype} {partOfName},</h2><p class="w-success-msg">Вы подали заявку на получение кредита в размере {amount} ₽ на срок {term}. Ваша заявка отправлена в:<br/> <ul>{banks}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>',
+  tabs: ['loan', 'bank_guarantee']
 });
 ```
 

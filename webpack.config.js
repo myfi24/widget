@@ -31,6 +31,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\/.json$/,
+        use: ["cson-loader"]
+      },
+      {
         test: /\.css$/,
         // use: ["style-loader", "css-loader"],
         use: ["css-loader"],
