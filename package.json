@@ -23,7 +23,8 @@
     "tsbuild:es6": "tsc",
     "tsbuild": "npm run tsbuild:es5 && npm run tsbuild:es6",
     "wpbuild": "webpack --mode production",
-    "build": "npm run clean && npm run tsbuild && npm run wpbuild"
+    "build": "npm run clean && npm run tsbuild && npm run wpbuild",
+    "publish": "npm publish"
   },
   "repository": {
     "type": "git",
