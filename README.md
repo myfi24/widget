@@ -8,7 +8,7 @@ npm i @myfi/widget
 
 ```js
 import createMYFIWidget from @myfi/widget;
-//
+// Инициализация виджета:
 createMYFIWidget(params);
 ```
 
@@ -41,7 +41,7 @@ params: {
     url: string;
   }[];
   successMessage?: string;
-  tabls?: []string;
+  tabs?: []string;
 }
 ```
 
@@ -52,7 +52,7 @@ params: {
 - `fontFamily` - шрифт, применяемый во всем блоке *(не обязательный параметр)*.
 - `style` - стили контейнера *(не обязательный параметр)*.
 - `markerStyle` - стили маркеров списка банков получателей заявки *(не обязательный параметр)*.
-- `apiUrl` - базовый url API. По умолчанию https://api.mirmyfi.ru/v3
+- `apiUrl` - базовый url API. По умолчанию https://api.myfi24.ru/v3 *(не обязательный параметр)*.
 - `agreements` - массив объектов настраивающих чекбоксы соглашений на форме заявке *(не обязательный параметр)*.
   - `label` - подпись чекбокса.
   - `url` - ссылка на документ (если требуется ознакомить заявителя).
@@ -72,7 +72,7 @@ myfiwidget({
   markerStyle: "color: red; content: '+'; font-size: 1.2em;",
   apiUrl: "https://api.mirmyfi.ru/v3",
   successMessage: '<h2>Уважаем{sextype} {partOfName},</h2><p class="w-success-msg">Вы подали заявку на получение кредита в размере {amount} ₽ на срок {term}. Ваша заявка отправлена в:<br/> <ul>{banks}</ul> В ближайшее время с вами свяжутся менеджеры банков.</p>',
-  tabs: ['loan', 'bank_guarantee']
+  tabs: ["loan", "bank_guarantee"]
 });
 ```
 

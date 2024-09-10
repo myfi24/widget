@@ -1,5 +1,5 @@
+dist/
 node_modules/
 .vscode/
 .idea/
-index.html
 tmp_*
