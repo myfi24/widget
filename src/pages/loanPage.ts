@@ -1,13 +1,17 @@
 import {IWidgetParams} from "../myfiwidget";
 import {
+    determineSexType,
+    formatNumberWithSpaces,
     numberWithSpaces,
     onDomContentLoaded,
     setInputFilter,
     setInputFilterWithWhitespaces,
 } from "../helpers";
 import {AsYouType, isValidPhoneNumber} from "libphonenumber-js";
+import "../styles/loan.scss";
 
 const pj = require("../../package.json")
+const pageTemplate = require("../templates/loan.html")
 
 export function loanPage(
     container: IWidgetParams["container"],
@@ -15,365 +19,11 @@ export function loanPage(
     apiUrl: IWidgetParams["apiUrl"],
     partnerCompanyId: IWidgetParams["partnerCompanyId"],
     partnerUserId: IWidgetParams["partnerUserId"],
-    fontFamily: IWidgetParams["fontFamily"],
-    style: IWidgetParams["style"],
-    markerStyle: IWidgetParams["markerStyle"],
     agreements: IWidgetParams["agreements"],
-    mobileWidth: IWidgetParams["mobileWidth"],
     successMessage: IWidgetParams["successMessage"]
 ) {
-    const css = `
-    :root {
-      --bg-gray: #ecf1f7;
-      --bg-active: #ffffff;
-      --border: #000;
-      --main-gray: #828282;
-      --text: #333333;
-      --error-bg: #ffd9d9;
-      --error-main: #eb5757;
-      --main-yellow: #f2c94c;
-      --secondary-yellow: #caa536;
-      --checkbox: #27ae60;
-    }
-    
-    .w-container * {
-      box-sizing: border-box;
-    }
-    
-    .test {
-      font-size: 16px;
-      color: salmon;
-    }
-    
-    .w-container {
-      width: 100%;
-      height: 100%;
-    
-      border-radius: 15px;
-    }
-  
-    .w-grid {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: 1fr 1fr;
-    }
-    @media (max-width: ${mobileWidth || 768}px) {
-      .w-grid {
-          grid-template-columns: 1fr;
-          width: 70vw;
-      }
-    }
-  
-    .w-field-wrap {
-      display: flex;
-      flex-direction: column;
-      height: 80px;
-      background-color: var(--bg-gray);
-      border-radius: 10px;
-      padding: 12px 26px;
-      position: relative;
-      width: 100%;
-      transition: all 0.2s;
-    }
-    
-    .w-field-wrap.w-focused {
-      /* border: 1px solid black; */
-    }
-    
-    .w-field-name {
-      font-size: 18px;
-      color: var(--main-gray);
-      transition: all 0.2s;
-      position: relative;
-      top: 15px;
-      pointer-events: none;
-      z-index: 10;
-    }
-    
-    .w-field-name.w-active {
-      font-size: 14px;
-      transition: all 0.2s;
-      top: 0;
-    }
-    
-    .w-input {
-      border-width: 0;
-      /* height: 30px; */
-      background-color: var(--bg-gray);
-      border-radius: 5px;
-      transition: all 0.2s;
-      margin-top: 9px;
-      font-size: 24px;
-      position: absolute;
-      height: 58px;
-      width: calc(100% - 30px);
-    }
-    
-    input:focus {
-      outline: none;
-      transition: all 0.2s;
-    }
-    
-    .w-input.w-term {
-      pointer-events: none;
-    }
-    
-    .w-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 1px;
-      border-radius: 10px;
-      background: var(--bg-gray);
-      outline: none;
-      opacity: 0.8;
-      -webkit-transition: 0.2s;
-      transition: opacity 0.2s;
-    
-      position: absolute;
-      bottom: -1px;
-      left: 5px;
-      width: calc(100% - 14px);
-      margin: 2px;
-    }
-  
-  
-    .w-slider-active-portion {
-      border-bottom: 2px var(--main-yellow) solid;
-      height: 2px;
-      /* background-color: #000; */
-      position: absolute;
-      bottom: 0px;
-      left: 7px;
-      z-index: 1111;
-      width: 0;
-      max-width: calc(100% - 14px);
-    }
-    
-    .w-slider:hover {
-      opacity: 1;
-    }
-    
-    .w-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--main-yellow);
-      border-color: var(--main-yellow);
-      cursor: pointer;
-  
-    }
-  
-    
-    .w-slider::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      background: var(--main-yellow);
-      cursor: pointer;
-      border-radius: 50%;
-      border-color: var(--main-yellow);
-    }
-    
-    .w-submit {
-      background-color: var(--main-yellow);
-      border-width: 0;
-      height: 60px;
-      width: 240px;
-      border-radius: 10px;
-      font-size: 24px;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin: 0 auto;
-      display: block;
-    }
-    
-    .w-submit.disabled {
-      pointer-events: none;
-      opacity: 0.5;
-    }
-    
-    .w-agreement-wrap {
-      grid-column: span 2;
-      // width: 80%;
-      margin: 30px auto;
-      line-height: 1.8em;
-    }
-    
-    .w-checkbox {
-      position: absolute;
-      z-index: -1;
-      opacity: 0;
-    }
-    
-    .w-checkbox + label {
-      user-select: none;
-    }
-    .w-checkbox + label::before {
-      content: "";
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      flex-shrink: 0;
-      flex-grow: 0;
-      border: 1px solid var(--secondary-yellow);
-      border-radius: 0.25em;
-      margin-right: 0.5em;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-size: 50% 50%;
-      cursor: pointer;
-    }
-    
-    .w-checkbox:checked + label::before {
-      border-color: var(--main-yellow);
-      background-color: var(--main-yellow);
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
-    }
-    
-    /* стили при наведении курсора на checkbox */
-    .w-checkbox:not(:disabled):not(:checked) + label:hover::before {
-      border-color: var(--secondary-yellow);
-    }
-    /* стили для активного состояния чекбокса (при нажатии на него) */
-    .w-checkbox:not(:disabled):active + label::before {
-      background-color: var(--secondary-yellow);
-      border-color: var(--secondary-yellow);
-    }
-    /* стили для чекбокса, находящегося в фокусе */
-    .w-checkbox:focus + label::before {
-      box-shadow: 0 0 0 0.2rem #caa53630;
-    }
-    /* стили для чекбокса, находящегося в фокусе и не находящегося в состоянии checked */
-    .w-checkbox:focus:not(:checked) + label::before {
-      border-color: var(--secondary-yellow);
-    }
-    /* стили для чекбокса, находящегося в состоянии disabled */
-    .w-checkbox:disabled + label::before {
-      background-color: red;
-    }
-  
-    .w-agreement {
-      font-size: 16px;
-      color: var(--main-gray);
-      display: flex;
-      align-items: baseline;
-      padding: 3px 0;
-    }
-    
-    .w-link {
-      color: var(--main-gray);
-      transition: all 0.2s;
-    }
-    
-    .w-link:hover {
-      color: var(--main-yellow);
-      transition: all 0.2s;
-    }
-    
-    .w-submit:hover {
-      background-color: #fcc319;
-      transition: all 0.2s;
-    }
-    
-    ul li.w-bank-item {
-      padding-left: 1ch;  
-    }
-  
-    ul .w-bank-item::marker {
-      color: var(--main-yellow);
-      ${markerStyle}
-    }
-  
-    .w-success-msg {
-      font-size: 16px;
-      display: flex;
-      align-items: baseline;
-      padding: 3px 0;
-    }
-    
-   
-  }
-  
-    `;
-    const html = `
-  <div class="w-container">
-  <div class="w-grid">
-  
-  <!-- <div class="w-field-wrap">
-    <span class="w-field-name w-active">Продукт</span>
-    <span class="w-selected">Кредит</span>
-    <ul class="w-dropdown">
-      <li>Кредит</li>
-      <li>Факторинг</li>
-      <li>Лизинг</li>
-      <li>Банковские гарантии</li>
-    </ul>
-  </div>
-  <span></span> -->
-  <div class="w-field-wrap w-term">
-    <span class="w-field-name w-active">Срок</span>
-    <input type="text" class="w-input w-term" value="3 месяца" />
-    <input type="range" min="3" max="36" value="3" class="w-slider w-term" id="myRange" />
-    <div class="w-term w-slider-active-portion"></div>
-  </div>
-  <div class="w-field-wrap w-sum">
-    <span class="w-field-name w-active">Сумма, ₽</span>
-    <input type="text" class="w-input w-sum" value="10 000" />
-    <input type="range" min="1" max="50000" value="1" class="w-slider w-sum" id="myRange" />
-    <div class="w-sum w-slider-active-portion"></div>
-  </div>
-  
-  
-  <div class="w-field-wrap">
-    <span class="w-field-name">Фамилия*</span>
-    <input type="text" class="w-input w-lastname" />
-  </div>
-  <div class="w-field-wrap">
-    <span class="w-field-name">Имя*</span>
-    <input type="text" class="w-input w-1stname" />
-  </div>
-  <div class="w-field-wrap">
-    <span class="w-field-name">Отчество</span>
-    <input type="text" class="w-input w-2ndname" />
-  </div>
-  <div class="w-field-wrap">
-    <span class="w-field-name  ${!!inn ? "w-active" : ""}">ИНН*</span>
-    <input type="text" class="w-input w-inn" />
-  </div>
-  
-  <div class="w-field-wrap">
-    <span class="w-field-name w-active">Телефон*</span>
-    <input type="text" class="w-input w-phone" value="+" />
-  </div>
-  <div class="w-field-wrap">
-    <span class="w-field-name">Электронная почта*</span>
-    <input type="text" class="w-input w-email" />
-  </div>
-  </div>
-  
-  
-  <div class="w-agreement-wrap">
-  </div>
-  
-  <button class="w-submit disabled" type="button">Отправить</button>
-  
-                  
-  <style>.w-container {
-  ${style};
-  }
-  
-  .w-container * {
-    box-sizing: border-box;
-    font-family: ${fontFamily};
-  }
-  
-  ${css}
-  
-  </style></div>
-  
-  `;
+    let html = pageTemplate.default;
+    html = html.replace("{{inn}}", inn);
 
     let checkboxesCreated = false;
 
@@ -384,10 +34,6 @@ export function loanPage(
     const wgrid: HTMLElement = container.querySelector(".w-grid");
 
     const phoneInput: HTMLInputElement = wcontainer.querySelector(".w-phone")!;
-
-    const select: HTMLSpanElement = wcontainer.querySelector(".w-selected")!;
-    const dropdown: HTMLUListElement = wcontainer.querySelector(".w-dropdown")!;
-    // let selectActive: boolean = true;
 
     phoneInput.addEventListener("input", function () {
         const value = this.value.replaceAll(" ", "");
@@ -400,7 +46,6 @@ export function loanPage(
         }
     });
 
-    const digitsWithWhitespace = /^[0-9\b]|\t+$/;
     const digits = /^[0-9\b]+$/;
     const email = /.+@.+\.[A-Za-z]+$/;
 
@@ -452,23 +97,6 @@ export function loanPage(
     ].forEach((item) => item.addEventListener("blur", handleFocusChange));
 
     const submitBtn: HTMLInputElement = wcontainer.querySelector(".w-submit")!;
-
-    function formatNumberWithSpaces(summ) {
-        var numbersOnly = summ.replaceAll(" ", "");
-        return numbersOnly.replace(/\B(?=(?:\d{3})+(?!\d))/g, " ");
-    }
-
-    function determineSexType(fio) {
-        const femaleEndings = ['овна', 'евна', 'ична', 'ова', 'ева', 'ина', 'ая', 'яя', 'екая', 'цкая'];
-
-        function hasEnding(word, endings) {
-            return endings.some(ending => word.endsWith(ending));
-        }
-
-        const isFemale = hasEnding(fio[1], femaleEndings) || hasEnding(fio[2], femaleEndings);
-
-        return isFemale ? "ая" : "ый";
-    }
 
     (async function () {
         await onDomContentLoaded();
@@ -590,7 +218,7 @@ export function loanPage(
                     body: JSON.stringify(values),
                 });
 
-                if (res.status !== 200) {
+                if (!res.ok) {
                     const detail = (await res.json()).detail;
                     let error = "";
                     if (Array.isArray(detail)) {
@@ -602,7 +230,7 @@ export function loanPage(
                 }
 
                 const data = await res.json();
-                const banks = data.map((item) => item.to_company.name_clear);
+                const banks = data.map((item) => item.to_company.brand_name);
 
                 const fio = [
                     values.applicant_info.first_name,
@@ -613,7 +241,7 @@ export function loanPage(
 
                 let userNames = fio.filter(e => e);
                 const partOfName = userNames.join(" ");
-                const amount = formatNumberWithSpaces(sumInput.value)
+                const amount = formatNumberWithSpaces(values.application_info.amount)
                 const term = getValueWithMonths(values.application_info.term)
 
                 resetForm();

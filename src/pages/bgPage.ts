@@ -1,690 +1,26 @@
 import {IWidgetParams} from "../myfiwidget";
+import {determineSexType, formatNumberWithSpaces, onDomContentLoaded} from "../helpers";
+import "../styles/bg.scss";
 
 const pj = require("../../package.json");
+const pageTemplate = require("../templates/bg.html");
 
 
-export function bankGuaranteePage(
+export function bgPage(
     container: IWidgetParams["container"],
     inn: IWidgetParams["inn"],
     apiUrl: IWidgetParams["apiUrl"],
     partnerCompanyId: IWidgetParams["partnerCompanyId"],
     partnerUserId: IWidgetParams["partnerUserId"],
+    agreements: IWidgetParams["agreements"],
     successMessage: IWidgetParams["successMessage"]
 ) {
-    const css = `
-  .w-bank {
-    font-family: "Roboto", sans-serif;
-  }
-
-  .header {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .w-bank-title {
-      margin: 0 0 60px;
-  }
-  
-  .w-bank-titleMini {
-  margin-bottom: 30px;
-  }
-  
-  .w-field-container {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-  }
-  
-  .w-field-wrap {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
-    position: relative;
-  }
-  
-  .w-input {
-    border: none;
-    display: grid;
-    grid-column: 2 / 4;
-    font-size: 16px;
-    line-height: 16px;
-    padding: 14px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-
-  }
-  
-  .w-input::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-  }
-  
-  .w-field-left {
-    padding: 14px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    line-height: 16px;
-  }
-  
-  .option {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="640"><polygon points="0,0 1024,0 512,640" fill="grey"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 18px top 50%;
-    background-size: 0.65em auto;
-  }
-  
-  .option option {
-    color: black;
-  }
-  
-  .option::-moz-focus-inner {
-    border: 0;
-  }
-  
-  .option:-moz-focusring {
-    color: transparent;
-    text-shadow: 0 0 0 black;
-  }
-  
-  .w-field-download {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-
-  .download-text {
-    color: blueviolet;
-    font-size: 18px;
-    margin: 0;
-  }
-  
-  .download-files {
-    color: rgba(0, 0, 0, 0.5);
-    font-size: 14px;
-    margin: 0;
-  }
-  
-  .download-buttons {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-    gap: 20px;
-  }
-  .download-save {
-    color: blueviolet;
-    border: none;
-    background-color: transparent;
-    width: 30%;
-    padding: 10px 0;
-    border-radius: 10px;
-    font-size: 18px;
-  }
-  
-  .download-send {
-    color: rgba(0, 0, 0, 0.4);
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-    border: none;
-    width: 30%;
-    padding: 10px 0;
-    font-size: 18px;
-  }
-
-  .arrowheader,
- {
-    display: flex;
-    align-items: center;
-    margin: 50px 0 30px;
-  }
-
-  .arrow,
-  .arrow2,
-  .arrow3 {
-    display: inline-block;
-    transform: rotate(90deg);
-    transform-origin: center;
-    font-size: 30px;
-    margin-left: 20px;
-    margin-top: 4px;
-    cursor: pointer;
-  }
-  
-  .arrow.up,
-  .arrow2.up,
-  .arrow3.up {
-    transform: rotate(270deg);
-    transform-origin: center;
-  }
-  
-  @media (max-width: 768px) {
-
-    .error-message {
-      position: absolute;
-      right: 20px;
-      top: 75% !important;
-      transform: translate(0,-50%);
-      font-size: 12px;
-    }
-
-    .w-field-download {
-      justify-content: center;
-      
-    }
-    .w-field-wrap {
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: auto;
-    }
-  
-    .w-input {
-      display: grid;
-      grid-column: 1;
-    }
-  
-    .download-buttons {
-      flex-direction: column;
-      align-items: center;
-      margin-top: 20px;
-      gap: 20px;
-    }
-  
-    .download-save,
-    .download-send {
-      width: 60%;
-    }
-    .download-files {
-      padding: 0 10px;
-      text-align: center;
-
-    }
-  }  
-  .security {
-  margin: 0;
-}
-
-#uploadBtn,
-#uploadBtn2,
-#uploadBtn3,
-#uploadBtn4 {
-  color: blueviolet;
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 34px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  cursor: pointer;
-  background-color: transparent;
-}
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none; 
-}
-
-input[type='number'],
-input[type="number"]:hover,
-input[type="number"]:focus {
-    appearance: none;
-    -moz-appearance: textfield;
-}
-
-.error-message {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translate(0,-50%)
-}
-  `;
-
-    const html = `<div style="width: 100%; max-width: 1080px; margin: 0 auto">
-  <div class="w-bank">
-    <h1>Заявка на гарантию</h1>
-  
-    <p class="w-bank-title">
-      Заполните поля. Мы подберём для вас лучшие предложения от партнёров.
-    </p>
-  
-    <div class="w-field-container">
-      <div class="w-field-wrap">
-        <span class="w-field-left">Вид закупки</span>
-  
-        <select class="w-input option option-type">
-          <option value="state" selected>Государственная</option>
-          <option value="commercial">Коммерческая</option>
-        </select>
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">Вид гарантии</span>
-  
-        <select class="w-input option option-guarantee">
-          <option value="execution" selected>На исполнение</option>
-          <option value="participate">На участие в конкурсе/тендере</option>
-          <option value="advance">Возврат аванса</option>
-          <option value="warranty">Гарантийные обязательства</option>
-        </select>
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">Федеральный закон</span>
-  
-        <select class="w-input option option-low">
-          <option value="223" selected>223 ФЗ</option>
-          <option value="44">44 ФЗ</option>
-          <option value="615">615 ПП</option>
-          <option value="notState">Неизвестно</option>
-        </select>
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">Номер закупки</span>
-  
-        <input
-          type="text"
-          class="w-input w-term buy-number"
-          placeholder="Введите номер, если он у вас есть"
-        />
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">Ссылка на страницу конкурса/тендера</span>
-  
-        <input
-          type="text"
-          class="w-input w-term link-tender"
-          placeholder=""
-        />
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">Способ предоставления гарантии</span>
-  
-        <select class="w-input option option-guarantee-method">
-          <option value="paper" selected>Бумажная</option>
-          <option value="electronic">Электронная</option>
-          <option value="undefined">Неизвестно</option>
-        </select>
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">ИНН заказчика</span>
-  
-        <input
-          type="number"
-          class="w-input w-term customer-inn"
-          placeholder="Введите ИНН заказчика"
-        />
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">Сумма контракта</span>
-  
-        <input
-          type="text"
-          class="w-input w-term sum-contract"
-          placeholder="0 ₽"
-        />
-      </div>
-      <div class="w-field-wrap">
-        <span class="w-field-left">Сумма банковской гарантии</span>
-  
-        <input
-          type="text"
-          class="w-input w-term sum-guarantee"
-          placeholder="0 ₽"
-        />
-      </div>
-  
-      <div class="w-field-wrap">
-        <span class="w-field-left">Требуемый период выдачи</span>
-  
-        <input
-          type="text"
-          class="w-input w-term period"
-          placeholder="__.__.____-__.__.____"
-          id="dateMask"
-          required
-        />
-
-      </div>
-      <div class="w-field-wrap">
-        <span class="w-field-left">Наличие обеспечения</span>
-        <div
-          style="display: flex; justify-content: flex-start; gap: 10px"
-          class="w-input"
-        >
-          <div style="display: flex; align-items: center; gap: 5px">
-            <input
-              id="yes"
-              type="radio"
-              name="security"
-              class="security"
-              value="yes"
-            />
-            <label for="yes">Да</label>
-          </div>
-          <div style="display: flex; align-items: center; gap: 5px">
-            <input
-              id="no"
-              type="radio"
-              name="security"
-              class="security"
-              value="no"
-            />
-            <label for="no">Нет</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-  <h2 class="arrowheader1">
-    Информация о получателе <span class="arrow">&#8250;</span>
-  </h2>
-  
-  <div class="w-field-container" id="recipientInfo">
-    <div class="w-field-wrap">
-      <span class="w-field-left">ИНН вашей компании/ИП</span>
-  
-      <input
-        type="text"
-        class="w-input w-term inn"
-        value="${inn}"
-        placeholder="ИНН вашей компании/ИП"
-      />
-    </div>
-    
-    <div class="w-field-wrap">
-      <span class="w-field-left">Фамилия</span>
-  
-      <input
-        type="text"
-        class="w-input w-term last-name"
-        placeholder="Иванов"
-      />
-    </div>
-    
-    <div class="w-field-wrap">
-      <span class="w-field-left">Имя</span>
-  
-      <input
-        type="text"
-        class="w-input w-term first-name"
-        placeholder="Иван"
-      />
-    </div>
-    
-    <div class="w-field-wrap">
-      <span class="w-field-left">Отчество (если есть)</span>
-  
-      <input
-        type="text"
-        class="w-input w-term second-name"
-        placeholder="Иванович"
-      />
-    </div>
-    
-    <div class="w-field-wrap">
-      <span class="w-field-left">Электронная почта</span>
-  
-      <input
-        type="text"
-        class="w-input w-term email"
-        placeholder="you@email.tld"
-      />
-    </div>
-  
-    <div class="w-field-wrap">
-      <span class="w-field-left">Мобильный телефон</span>
-  
-      <input
-        type="text"
-        class="w-input w-term phone"
-        placeholder="Телефон в формате: +79876543210"
-      />
-    </div>
-  </div>
-  
-  <h2 class="arrowheader2">
-    Сумма выручки <span class="arrow2">&#8250;</span>
-  </h2>
-  
-  <p class="w-bank-titleMini">
-    Заполните, если у вас есть данные. Если нет - заполнять не обязательно.
-  </p>
-  
-  <div class="w-field-container" id="recipientInfo2">
-    <div class="w-field-wrap">
-      <span class="w-field-left"
-        >Сумма выручки за предшествующий закончившийся период (3,6,9 мес,
-        год) текущего года</span
-      >
-  
-      <input type="text" class="w-input w-term sum-first" placeholder="0 ₽"/>
-    </div>
-  
-    <div class="w-field-wrap">
-      <span class="w-field-left"
-        >Сумма выручки за аналогичный период (3,6,9 мес, год )
-        предшествующего года</span
-      >
-  
-      <input type="text" class="w-input w-term whole-year" placeholder="0 ₽"/>
-    </div>
-  
-    <div class="w-field-wrap">
-      <span class="w-field-left"
-        >Сумма выручки за закончившийся календарный год
-      </span>
-  
-      <input type="text" id="sum-last" class="w-input w-term sum-last" placeholder="0 ₽"/>
-    </div>
-  </div>
-  
-  <h2 class="arrowheader3">
-    Документы <span class="arrow3">&#8250;</span>
-  </h2>
-  
-  <div class="w-field-download" id="recipientInfo3" style="display: flex">
-        <div
-          style="
-            width: 260px;
-            height: 170px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding-top: 30px;
-            gap: 10px;
-          "
-        >
-          <input
-            type="file"
-            class="w-input w-term files1"
-            multiple
-            accept=".pdf,.zip"
-            style="display: none"
-          />
-          <button id="uploadBtn">+</button>
-          <p class="download-text">Загрузить файлы</p>
-          <p class="download-files" style="text-align:center">Бухгалтерский баланс за полные 12 месяцев + текущий</p>
-          <div id="fileNames" style="text-align:center; font-size:10px;"></div> 
-          <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF или ZIP не более 20 МБ</p>
-        </div>
-
-        <div
-          style="
-            width: 260px;
-            height: 170px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding-top: 30px;
-            gap: 10px;
-          "
-        >
-          <input
-            type="file"
-            class="w-input w-term files2"
-            multiple
-            accept=".pdf,.zip"
-            style="display: none"
-          />
-          <button id="uploadBtn2">+</button>
-          <p class="download-text">Загрузить файлы</p>
-          <p class="download-files" style="text-align:center">Скан паспорта ген. директора или индивидуального предпринимателя</p>
-          <div id="fileNames2" style="text-align:center; font-size:10px;"></div> 
-          <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF или ZIP не более 20 МБ</p>
-        </div>
-
-        <div
-          style="
-            width: 260px;
-            height: 170px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding-top: 30px;
-            gap: 10px;
-          "
-        >
-          <input
-            type="file"
-            class="w-input w-term files3"
-            multiple
-            accept=".pdf,.zip"
-            style="display: none"
-          />
-          <button id="uploadBtn3">+</button>
-          <p class="download-text">Загрузить файлы</p>
-          <p class="download-files" style="text-align:center">Шаблон документа банковской гарантии </p>
-          <div id="fileNames3" style="text-align:center; font-size:10px;"></div> 
-          <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF или ZIP не более 20 МБ</p>
-        </div>
-
-        <div
-          style="
-            width: 260px;
-            height: 170px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding-top: 30px;
-            gap: 10px;
-          "
-        >
-          <input
-            type="file"
-            class="w-input w-term files4"
-            multiple
-            accept=".pdf,.zip"
-            style="display: none"
-          />
-          <button id="uploadBtn4">+</button>
-          <p class="download-text">Загрузить файлы</p>
-          <p class="download-files" style="text-align:center">Иные документы по выбору заявителя, упакованные в Zip архив</p>
-          <div id="fileNames4" style="text-align:center; font-size:10px;"></div> 
-          <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF или ZIP не более 20 МБ</p>
-        </div>
-
-       
-      </div>
-
-  <div class="download-buttons">
-    <button class="download-save" type="button" style="cursor: pointer">
-      Сохранить как черновик
-    </button>
-    <button class="download-send" type="button">
-      Отправить
-    </button>
-  </div>
-
-  </div>
-  </div>
-  <style>
-  
-    ${css}
-    
-    </style>
-  </div>`;
-
-    //Начало куки
-    // function saveDataToCookies() {
-    //   const inputs = document.querySelectorAll(".w-input") as NodeListOf<
-    //     HTMLInputElement | HTMLSelectElement
-    //   >;
-    //   inputs.forEach((input) => {
-    //     document.cookie = `${input.className}=${input.value}; path=/; max-age=86400`;
-    //   });
-    // }
-
-    // function restoreDataFromCookies() {
-    //   const inputs = document.querySelectorAll(".w-input") as NodeListOf<
-    //     HTMLInputElement | HTMLSelectElement
-    //   >;
-    //   inputs.forEach((input) => {
-    //     const cookieValue = getCookie(input.className);
-    //     if (cookieValue) {
-    //       input.value = cookieValue;
-    //     }
-    //   });
-    // }
-
-    // function getCookie(name) {
-    //   let cookieArr = document.cookie.split(";");
-    //   for (let i = 0; i < cookieArr.length; i++) {
-    //     let cookiePair = cookieArr[i].split("=");
-    //     if (name == cookiePair[0].trim()) {
-    //       return decodeURIComponent(cookiePair[1]);
-    //     }
-    //   }
-    //   return null;
-    // }
-
-    // function checkDataInCookies() {
-    //   console.log("Checking cookies:", document.cookie);
-    //   if (document.cookie) {
-    //     console.log("Cookies found, showing prompt.");
-    //     if (confirm("Восстановить данные из черновика?")) {
-    //       restoreDataFromCookies();
-    //     }
-    //   } else {
-    //     console.log("No cookies found.");
-    //   }
-    // }
-
-    // document.addEventListener("DOMContentLoaded", () => {
-    //   console.log("DOM fully loaded and parsed");
-    //   checkDataInCookies();
-    // });
-    //конец куки
-
+    let checkboxesCreated = false;
+    let html = pageTemplate.default;
+    html = html.replace('{{inn}}', inn);
     container.innerHTML = html;
     const icontainer = container.querySelector(".w-bank");
+    const wgrid: HTMLElement = container.querySelector(".w-grid");
 
     const optionTypeInput = icontainer.querySelector(".option-type");
     const optionGInput = icontainer.querySelector(".option-guarantee");
@@ -706,6 +42,44 @@ input[type="number"]:focus {
     const linkTenderInput = icontainer.querySelector(".link-tender");
     const optionGMethodInput = icontainer.querySelector(".option-guarantee-method");
     const securityInput = icontainer.querySelector(".security");
+
+    (async function () {
+        await onDomContentLoaded();
+        if (!checkboxesCreated) {
+            const agreementWrap = document.querySelector(".w-agreement-wrap");
+            if (agreementWrap) {
+                agreements.forEach((checkboxInfo, index) => {
+                    const checkboxWrap = document.createElement("div");
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `agree${index + 1}`;
+                    checkbox.name = `agree${index + 1}`;
+                    checkbox.value = "true";
+                    checkbox.className = "w-checkbox";
+                    checkbox.checked = true;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = checkbox.id;
+                    if (checkboxInfo.url !== undefined && checkboxInfo.url.length > 0) {
+                        label.innerHTML = `
+                            <a class="w-link" href="${checkboxInfo.url}" target="_blank" rel="nofollow">
+                                ${checkboxInfo.label}
+                            </a>
+                        `;
+                    } else {
+                        label.innerHTML = checkboxInfo.label;
+                    }
+
+                    label.className = "w-agreement";
+
+                    checkboxWrap.appendChild(checkbox);
+                    checkboxWrap.appendChild(label);
+                    agreementWrap.appendChild(checkboxWrap);
+                });
+                checkboxesCreated = true;
+            }
+        }
+    })();
 
     //Ввод даты
     initializeDateMask();
@@ -906,7 +280,7 @@ input[type="number"]:focus {
     const arrowheader3 = icontainer.querySelector(".arrowheader3");
     arrowheader3.addEventListener("click", toggleContent3);
 
-    function toggleContent1() {
+    function toggleContent1(e) {
         const content = document.getElementById("recipientInfo");
         const arrow = document.querySelector(".arrow");
 
@@ -1068,26 +442,17 @@ input[type="number"]:focus {
     //проверка кнопок
     document.addEventListener("DOMContentLoaded", (event) => {
         const submitBtn = document.querySelector(".download-send");
-        const draftBtn = document.querySelector(".download-save");
 
         if (submitBtn) {
             submitBtn.addEventListener("click", handleSubmit);
         } else {
             console.error('Кнопка "Отправить" не найдена.');
         }
-
-        if (draftBtn) {
-            draftBtn.addEventListener("click", handleSaveDraft);
-        } else {
-            console.error('Кнопка "Сохранить как черновик" не найдена.');
-        }
     });
 
     //Отправка формы
     const submitBtn = icontainer.querySelector(".download-send");
     submitBtn.addEventListener("click", handleSubmit);
-    const draftBtn = icontainer.querySelector(".download-save");
-    draftBtn.addEventListener("click", handleSaveDraft);
 
     let errors = [];
 
@@ -1238,6 +603,17 @@ input[type="number"]:focus {
             /.+@.+\.[A-Za-z]+$/.test(emailInput.value.toLowerCase())
         );
 
+        const agreements: Array<HTMLInputElement> = Array.from(icontainer.querySelectorAll(".w-checkbox"));
+
+        if (agreements.length > 0) {
+            agreements.forEach((el) => el.addEventListener("change", function () {
+                const hasAgreedToAll = agreements.every((checkbox) => checkbox.checked);
+                if (!hasAgreedToAll) {
+                    errors.push(el, "Необходимо отметить согласие перед отправкой заявки");
+                }
+            }));
+        }
+
         if (errors.length > 0) {
             errors.forEach(({input, message}) => {
                 console.error(message);
@@ -1259,14 +635,7 @@ input[type="number"]:focus {
             body: JSON.stringify(values),
         });
 
-
-        if (res.ok) {
-            resetForm();
-            alert("Заявка отправлена!");
-
-            this.innerHTML = oldText;
-            setSubmitButtonDisabled(false);
-        } else {
+        if (!res.ok) {
             const detail = (await res.json()).detail;
             let error = "";
             if (Array.isArray(detail)) {
@@ -1280,6 +649,37 @@ input[type="number"]:focus {
 
             throw new Error(error);
         }
+
+        const data = await res.json();
+        const banks = data.map((item) => item.to_company.brand_name);
+
+        const fio = [
+            values.applicant_info.first_name,
+            values.applicant_info.second_name,
+            values.applicant_info.last_name
+        ];
+        const sexType = determineSexType(fio);
+
+        let userNames = fio.filter(e => e);
+        const partOfName = userNames.join(' ');
+        const amount = formatNumberWithSpaces(values.application_info.amount);
+
+        resetForm();
+        this.innerHTML = oldText;
+        setSubmitButtonDisabled(false);
+        const banksList = banks
+            .map((item: string) => `<li class="w-bank-item">${item}</li>`)
+            .join("");
+        icontainer.querySelector(".w-agreement-wrap").innerHTML =
+            successMessage.replace("{partOfName}", `${partOfName}`)
+                        .replace("{firstName}", `${values.applicant_info.first_name}`)
+                        .replace("{lastName}", `${values.applicant_info.last_name}`)
+                        .replace("{secondName}", `${values.applicant_info.second_name}`)
+                        .replace("{amount}", `${amount}`)
+                        .replace("{banks}", `${banksList}`)
+                        .replace("{sextype}", `${sexType}`);
+        wgrid.outerHTML = "";
+        setSubmitButtonDisabled(true);
     }
 
     function getAllFiles() {
@@ -1395,12 +795,6 @@ input[type="number"]:focus {
         };
     }
 
-    function handleSaveDraft(event: any) {
-        event.preventDefault();
-        const values = collectValues();
-        console.log("Сохранение черновика:", values);
-    }
-
     function updateSubmitButtonStyle() {
         const isOptionTypeState = optionTypeInput.value === "state";
         const isOptionLowInputFilled = optionLowInput.value.trim() !== "";
@@ -1473,5 +867,5 @@ input[type="number"]:focus {
         updateSubmitButtonStyle();
     });
 
-    return html;
+    return pageTemplate;
 }

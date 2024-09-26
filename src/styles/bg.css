@@ -1,0 +1,237 @@
+.w-bank {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  font-family: "Roboto", sans-serif;
+}
+.w-bank .header {
+  width: 100%;
+  text-align: center;
+}
+.w-bank .w-bank-title {
+  margin: 0 0 60px;
+}
+.w-bank .w-bank-titleMini {
+  margin-bottom: 30px;
+}
+.w-bank .w-field-container {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+.w-bank .w-field-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  position: relative;
+}
+.w-bank .w-input {
+  display: grid;
+  grid-column: 2/4;
+  font-size: 16px;
+  line-height: 16px;
+  padding: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.w-bank .w-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+.w-bank .w-field-left {
+  padding: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  line-height: 16px;
+}
+.w-bank .option {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="640"><polygon points="0,0 1024,0 512,640" fill="grey"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 18px top 50%;
+  background-size: 0.65em auto;
+}
+.w-bank .option:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 black;
+}
+.w-bank .option::-moz-focus-inner {
+  border: 0;
+}
+.w-bank .option option {
+  color: black;
+}
+.w-bank .w-field-download {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.w-bank .w-field-download > div {
+  width: 260px;
+  height: 170px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 30px;
+  gap: 10px;
+}
+.w-bank .w-field-download > div > input[type=file] {
+  display: none;
+}
+.w-bank .download-text {
+  color: blueviolet;
+  font-size: 18px;
+  margin: 0;
+}
+.w-bank .download-files {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  margin: 0;
+}
+.w-bank .download-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  gap: 20px;
+}
+.w-bank .download-save {
+  color: blueviolet;
+  border: none;
+  background-color: transparent;
+  width: 30%;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-size: 18px;
+}
+.w-bank .download-send {
+  color: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  border: none;
+  width: 30%;
+  padding: 10px 0;
+  font-size: 18px;
+}
+.w-bank .arrowheader {
+  display: flex;
+  align-items: center;
+  margin: 50px 0 30px;
+}
+.w-bank .arrow,
+.w-bank .arrow2,
+.w-bank .arrow3 {
+  display: inline-block;
+  transform: rotate(90deg);
+  transform-origin: center;
+  font-size: 30px;
+  margin-left: 20px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+.w-bank .arrow.up,
+.w-bank .arrow2.up,
+.w-bank .arrow3.up {
+  transform: rotate(270deg);
+  transform-origin: center;
+}
+.w-bank .security {
+  margin: 0;
+}
+.w-bank #uploadBtn,
+.w-bank #uploadBtn2,
+.w-bank #uploadBtn3,
+.w-bank #uploadBtn4 {
+  color: blueviolet;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 34px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  cursor: pointer;
+  background-color: transparent;
+}
+.w-bank input[type=number] {
+  appearance: none;
+  -moz-appearance: textfield;
+}
+.w-bank input[type=number]:hover, .w-bank input[type=number]:focus {
+  appearance: none;
+  -moz-appearance: textfield;
+}
+.w-bank input[type=number]::-webkit-outer-spin-button, .w-bank input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.w-bank .error-message {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+.w-bank .w-agreement-wrap {
+  grid-column: span 2;
+  margin: 30px auto;
+  line-height: 1.8em;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 10px;
+}
+.w-bank .w-agreement-wrap > div {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.w-bank .w-agreement-wrap > div:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .w-bank .error-message {
+    position: absolute;
+    right: 20px;
+    top: 75% !important;
+    transform: translate(0, -50%);
+    font-size: 12px;
+  }
+  .w-bank .w-field-download {
+    justify-content: center;
+  }
+  .w-bank .w-field-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .w-bank .w-input {
+    display: grid;
+    grid-column: 1;
+  }
+  .w-bank .download-buttons {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    gap: 20px;
+  }
+  .w-bank .download-save,
+  .w-bank .download-send {
+    width: 60%;
+  }
+  .w-bank .download-files {
+    padding: 0 10px;
+    text-align: center;
+  }
+}
+
+/*# sourceMappingURL=bg.css.map */

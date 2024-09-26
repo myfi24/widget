@@ -1,0 +1,217 @@
+<div class="w-bank">
+    <div class="w-grid">
+        <h1>Заявка на гарантию</h1>
+        <p class="w-bank-title">Заполните поля. Мы подберём для вас лучшие предложения от партнёров.</p>
+        <div class="w-field-container">
+            <div class="w-field-wrap">
+                <span class="w-field-left">Вид закупки</span>
+                <select class="w-input option option-type">
+                    <option value="state" selected>Государственная</option>
+                    <option value="commercial">Коммерческая</option>
+                </select>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Вид гарантии</span>
+                <select class="w-input option option-guarantee">
+                    <option value="execution" selected>На исполнение</option>
+                    <option value="participate">На участие в конкурсе/тендере</option>
+                    <option value="advance">Возврат аванса</option>
+                    <option value="warranty">Гарантийные обязательства</option>
+                </select>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Федеральный закон</span>
+                <select class="w-input option option-low">
+                    <option value="223" selected>223 ФЗ</option>
+                    <option value="44">44 ФЗ</option>
+                    <option value="615">615 ПП</option>
+                    <option value="notState">Неизвестно</option>
+                </select>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Номер закупки</span>
+                <input class="w-input w-term buy-number" placeholder="Введите номер, если он у вас есть"/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Ссылка на страницу конкурса/тендера</span>
+                <input class="w-input w-term link-tender" placeholder="https://zakupki.gov.ru/" required/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Способ предоставления гарантии</span>
+                <select class="w-input option option-guarantee-method">
+                    <option value="paper" selected>Бумажная</option>
+                    <option value="electronic">Электронная</option>
+                    <option value="undefined">Неизвестно</option>
+                </select>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">ИНН заказчика</span>
+                <input class="w-input w-term customer-inn" placeholder="Введите ИНН заказчика" required/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Сумма контракта</span>
+                <input class="w-input w-term sum-contract" placeholder="0 ₽" required/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Сумма банковской гарантии</span>
+                <input class="w-input w-term sum-guarantee" placeholder="0 ₽" required/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Требуемый период выдачи</span>
+                <input
+                        type="text"
+                        class="w-input w-term period"
+                        placeholder="__.__.____-__.__.____"
+                        id="dateMask"
+                        required
+                />
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Наличие обеспечения</span>
+                <div style="display: flex; justify-content: flex-start; gap: 10px" class="w-input">
+                    <div style="display: flex; align-items: center; gap: 5px">
+                        <input
+                                id="yes"
+                                type="radio"
+                                name="security"
+                                class="security"
+                                value="yes"
+                        />
+                        <label for="yes">Да</label>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px">
+                        <input
+                                id="no"
+                                type="radio"
+                                name="security"
+                                class="security"
+                                value="no"
+                        />
+                        <label for="no">Нет</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="arrowheader1">Информация о получателе <span class="arrow">&#8250;</span></h2>
+        <div class="w-field-container" id="recipientInfo">
+            <div class="w-field-wrap">
+                <span class="w-field-left">ИНН вашей компании/ИП</span>
+                <input class="w-input w-term inn" value="{{inn}}" placeholder="ИНН вашей компании/ИП" required/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Фамилия</span>
+                <input class="w-input w-term last-name" placeholder="Иванов"/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Имя</span>
+                <input class="w-input w-term first-name" placeholder="Иван" required/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Отчество (если есть)</span>
+                <input class="w-input w-term second-name" placeholder="Иванович"/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Электронная почта</span>
+                <input type="email" class="w-input w-term email" placeholder="you@email.tld" required/>
+            </div>
+
+            <div class="w-field-wrap">
+                <span class="w-field-left">Мобильный телефон</span>
+                <input class="w-input w-term phone" placeholder="Телефон в формате: +79876543210" required/>
+            </div>
+        </div>
+
+        <h2 class="arrowheader2">Сумма выручки <span class="arrow2">&#8250;</span></h2>
+        <p class="w-bank-titleMini">Заполните, если у вас есть данные. Если нет - заполнять не обязательно.</p>
+        <div class="w-field-container" id="recipientInfo2">
+            <div class="w-field-wrap">
+                    <span class="w-field-left">
+                        Сумма выручки за предшествующий закончившийся период (3,6,9 мес, год) текущего года
+                    </span>
+                <input type="text" class="w-input w-term sum-first" placeholder="0 ₽"/>
+            </div>
+
+            <div class="w-field-wrap">
+                    <span class="w-field-left">
+                        Сумма выручки за аналогичный период (3,6,9 мес, год ) предшествующего года
+                    </span>
+                <input type="text" class="w-input w-term whole-year" placeholder="0 ₽"/>
+            </div>
+
+            <div class="w-field-wrap">
+                    <span class="w-field-left">
+                        Сумма выручки за закончившийся календарный год
+                    </span>
+                <input type="text" id="sum-last" class="w-input w-term sum-last" placeholder="0 ₽"/>
+            </div>
+        </div>
+
+        <h2 class="arrowheader3">Документы <span class="arrow3">&#8250;</span></h2>
+        <div class="w-field-download" id="recipientInfo3">
+            <div>
+                <input type="file" class="w-input w-term files1" multiple accept=".pdf,.zip,.rar"/>
+                <button id="uploadBtn">+</button>
+                <p class="download-text">Загрузить файлы</p>
+                <p class="download-files" style="text-align:center">Бухгалтерский баланс за полные 12 месяцев +
+                    текущий</p>
+                <div id="fileNames" style="text-align:center; font-size:10px;"></div>
+                <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF, ZIP и/или RAR не более
+                    20 МБ</p>
+            </div>
+
+            <div>
+                <input type="file" class="w-input w-term files2" multiple accept=".pdf,.zip,.rar"/>
+                <button id="uploadBtn2">+</button>
+                <p class="download-text">Загрузить файлы</p>
+                <p class="download-files" style="text-align:center">Скан паспорта ген. директора или индивидуального
+                    предпринимателя</p>
+                <div id="fileNames2" style="text-align:center; font-size:10px;"></div>
+                <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF, ZIP и/или RAR не более
+                    20 МБ</p>
+            </div>
+
+            <div>
+                <input type="file" class="w-input w-term files3" multiple accept=".pdf,.zip,.rar"/>
+                <button id="uploadBtn3">+</button>
+                <p class="download-text">Загрузить файлы</p>
+                <p class="download-files" style="text-align:center">Шаблон документа банковской гарантии </p>
+                <div id="fileNames3" style="text-align:center; font-size:10px;"></div>
+                <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF, ZIP и/или RAR не более
+                    20 МБ</p>
+            </div>
+
+            <div>
+                <input type="file" class="w-input w-term files4" multiple accept=".pdf,.zip,.rar"/>
+                <button id="uploadBtn4">+</button>
+                <p class="download-text">Загрузить файлы</p>
+                <p class="download-files" style="text-align:center">Иные документы по выбору заявителя, упакованные в
+                    Zip архив</p>
+                <div id="fileNames4" style="text-align:center; font-size:10px;"></div>
+                <p class="download-files" style="font-size:10px; color: rgba(0, 0, 0, 0.4);">PDF, ZIP и/или RAR не более
+                    20 МБ</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="w-agreement-wrap"></div>
+
+    <div class="download-buttons">
+        <button class="download-send" type="button">Отправить</button>
+    </div>
+</div>

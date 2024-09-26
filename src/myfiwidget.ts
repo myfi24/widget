@@ -1,11 +1,6 @@
 import { defaultAgreements } from "./defaultAgreements";
-import { bankGuaranteePage } from "./pages/bankGuaranteePage";
+import { bgPage } from "./pages/bgPage";
 import { loanPage } from "./pages/loanPage";
-
-export interface IAgreement {
-  label: string;
-  url?: string;
-}
 
 export interface IWidgetParams {
   container?: any;
@@ -18,9 +13,14 @@ export interface IWidgetParams {
   apiUrl?: string;
   agreements?: Array<IAgreement>;
   mobileWidth?: string;
-  tabs?: Array<string>;
+  tabs?: Array<"loan" | "bank_guarantee">;
   wrapper?: any;
   successMessage?: string;
+}
+
+interface IAgreement {
+  label: string;
+  url?: string;
 }
 
 export default function createMYFIWidget(params?: IWidgetParams) {
@@ -28,16 +28,12 @@ export default function createMYFIWidget(params?: IWidgetParams) {
   const inn = params.inn || "";
   const partnerCompanyId = params.partnerCompanyId;
   const partnerUserId = params.partnerUserId;
-  const fontFamily = params.fontFamily || "Roboto";
-  const style = params.style || "";
-  const markerStyle = params.markerStyle || "";
   const apiUrl = params.apiUrl || "https://api.myfi24.ru/v3";
   const agreements = params.agreements || defaultAgreements();
   const defaultSuccessMessage = `<h2>Уважаем{sextype} {partOfName},</h2> <p class="w-success-msg">
 Вы подали заявку на получение кредита в размере {amount} ₽ на срок {term}. Ваша заявка отправлена в:<br/> <ul>{banks}</ul> 
 В ближайшее время с вами свяжутся менеджеры банков.</p>`;
   const successMessage = params.successMessage || defaultSuccessMessage;
-  const mobileWidth = params.mobileWidth || "";
   const tabs = params.tabs || ["loan", "bank_guarantee"];
 
   let loanButton;
@@ -117,11 +113,7 @@ export default function createMYFIWidget(params?: IWidgetParams) {
         apiUrl,
         partnerCompanyId,
         partnerUserId,
-        fontFamily,
-        style,
-        markerStyle,
         agreements,
-        mobileWidth,
         successMessage
       );
     };
@@ -131,7 +123,15 @@ export default function createMYFIWidget(params?: IWidgetParams) {
     bankGuaranteeButton.onclick = () => {
       bankGuaranteeButton.style.background = "#fff";
       if (loanButton) loanButton.style.background = "#ecf1f7";
-      bankGuaranteePage(contentContainer, inn, apiUrl, partnerCompanyId, partnerUserId, successMessage);
+      bgPage(
+          contentContainer,
+          inn,
+          apiUrl,
+          partnerCompanyId,
+          partnerUserId,
+          agreements,
+          successMessage
+      );
     };
   }
 
