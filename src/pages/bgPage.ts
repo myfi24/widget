@@ -639,8 +639,12 @@ export function bgPage(
             const detail = (await res.json()).detail;
             let error = "";
             if (Array.isArray(detail)) {
-                detail.forEach((item) => (error += item.msg + "\n"));
+                detail.forEach((item) => {
+                    showError(this, item.msg);
+                    error += item.msg + "\n"
+                });
             } else {
+                showError(this, detail)
                 error = detail;
             }
 
@@ -672,14 +676,27 @@ export function bgPage(
             .join("");
         icontainer.querySelector(".w-agreement-wrap").innerHTML =
             successMessage.replace("{partOfName}", `${partOfName}`)
-                        .replace("{firstName}", `${values.applicant_info.first_name}`)
-                        .replace("{lastName}", `${values.applicant_info.last_name}`)
-                        .replace("{secondName}", `${values.applicant_info.second_name}`)
-                        .replace("{amount}", `${amount}`)
-                        .replace("{banks}", `${banksList}`)
-                        .replace("{sextype}", `${sexType}`);
+                .replace("{firstName}", `${values.applicant_info.first_name}`)
+                .replace("{lastName}", `${values.applicant_info.last_name}`)
+                .replace("{secondName}", `${values.applicant_info.second_name}`)
+                .replace("{amount}", `${amount}`)
+                .replace("{banks}", `${banksList}`)
+                .replace("{sextype}", `${sexType}`);
         wgrid.outerHTML = "";
         setSubmitButtonDisabled(true);
+    }
+
+    function showError(targetElement: Element, message: string) {
+        let errBlk = document.createElement('div');
+        errBlk.className = 'w-error';
+        errBlk.innerText = message;
+        let errEl = targetElement.insertAdjacentElement('afterend', errBlk);
+        setTimeout(() => {
+            errEl.classList.add('hide');
+            setTimeout(() => {
+                errEl.remove();
+            }, 1800);
+        }, 3000);
     }
 
     function getAllFiles() {
