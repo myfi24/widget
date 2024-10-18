@@ -1,6 +1,6 @@
 {
   "name": "@myfi/widget",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Виджет подачи кредитных заявок для бизнеса",
   "unpkg": "dist/lib/es5/myfiwidget.js",
   "jsdelivr": "dist/_bundles/myfiwidget.js",

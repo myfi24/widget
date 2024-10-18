@@ -36,9 +36,6 @@ export function bgPage(
     const lastNameInput = icontainer.querySelector(".last-name");
     const firstNameInput = icontainer.querySelector(".first-name");
     const secondNameInput = icontainer.querySelector(".second-name");
-    const sumLastInput = icontainer.querySelector(".sum-last");
-    const wholeYearInput = icontainer.querySelector(".whole-year");
-    const sumFirstInput = icontainer.querySelector(".sum-first");
     const linkTenderInput = icontainer.querySelector(".link-tender");
     const optionGMethodInput = icontainer.querySelector(".option-guarantee-method");
     const securityInput = icontainer.querySelector(".security");
@@ -339,9 +336,6 @@ export function bgPage(
         secondNameInput,
         emailInput,
         phoneInput,
-        sumLastInput,
-        wholeYearInput,
-        sumFirstInput,
     ].forEach((item) => {
         if (item) {
         } else {
@@ -364,9 +358,6 @@ export function bgPage(
                 secondNameInput,
                 emailInput,
                 phoneInput,
-                sumLastInput,
-                wholeYearInput,
-                sumFirstInput
             );
         }
     });
@@ -400,10 +391,7 @@ export function bgPage(
     }
 
     sumGInput.addEventListener("keydown", restrictToNumbers);
-    sumFirstInput.addEventListener("keydown", restrictToNumbers);
     sumCInput.addEventListener("keydown", restrictToNumbers);
-    sumLastInput.addEventListener("keydown", restrictToNumbers);
-    wholeYearInput.addEventListener("keydown", restrictToNumbers);
 
     sumGInput.addEventListener("input", function (e: any) {
         var value = e.target.value.replace(/[^\d]/g, "");
@@ -411,28 +399,8 @@ export function bgPage(
             e.target.value = value + " ₽";
         }
     });
-    sumFirstInput.addEventListener("input", function (e: any) {
-        var value = e.target.value.replace(/[^\d]/g, "");
-        if (value) {
-            e.target.value = value + " ₽";
-        }
-    });
 
     sumCInput.addEventListener("input", function (e: any) {
-        var value = e.target.value.replace(/[^\d]/g, "");
-        if (value) {
-            e.target.value = value + " ₽";
-        }
-    });
-
-    sumLastInput.addEventListener("input", function (e: any) {
-        var value = e.target.value.replace(/[^\d]/g, "");
-        if (value) {
-            e.target.value = value + " ₽";
-        }
-    });
-
-    wholeYearInput.addEventListener("input", function (e: any) {
         var value = e.target.value.replace(/[^\d]/g, "");
         if (value) {
             e.target.value = value + " ₽";
@@ -543,10 +511,7 @@ export function bgPage(
         () => phoneInput.value.length > 9 && phoneInput.value.length < 14
     );
     addValidationEvent(sumCInput, "Введите сумму", () => sumCInput.value);
-    addValidationEvent(sumFirstInput, "Введите сумму", () => sumFirstInput.value);
-    addValidationEvent(sumLastInput, "Введите сумму", () => sumLastInput.value);
     addValidationEvent(sumGInput, "Введите сумму", () => sumGInput.value);
-    addValidationEvent(wholeYearInput, "Введите сумму", () => wholeYearInput.value);
     addValidationEvent(periodInput, "Введите период", () => periodInput.value);
     addValidationEvent(
         periodInput,
@@ -588,10 +553,7 @@ export function bgPage(
             () => phoneInput.value.length > 9 && phoneInput.value.length < 14
         );
         validateInput(sumCInput, "Введите сумму", () => sumCInput.value);
-        validateInput(sumFirstInput, "Введите сумму", () => sumFirstInput.value);
-        validateInput(sumLastInput, "Введите сумму", () => sumLastInput.value);
         validateInput(sumGInput, "Введите сумму", () => sumGInput.value);
-        validateInput(wholeYearInput, "Введите сумму", () => wholeYearInput.value);
         validateInput(periodInput, "Введите период", () => periodInput.value);
         validateInput(
             periodInput,
@@ -738,9 +700,6 @@ export function bgPage(
         secondNameInput.value = "";
         emailInput.value = "";
         phoneInput.value = "";
-        sumLastInput.value = "";
-        wholeYearInput.value = "";
-        sumFirstInput.value = "";
         securityInput.value = "undefined";
         optionGMethodInput.value = "";
         linkTenderInput.value = "";
@@ -793,9 +752,6 @@ export function bgPage(
                 amount: parseInt(sumGInput.value),
                 period: periodInput.value,
                 customer_inn: customerInnInput.value,
-                sumLLast: parseInt(sumLastInput.value),
-                wholeYear: parseInt(wholeYearInput.value),
-                sumFirst: parseInt(sumFirstInput.value),
                 security: getSecurityValue(),
                 optionGMethod: optionGMethodInput.value,
                 linkTender: linkTenderInput.value,
@@ -846,9 +802,6 @@ export function bgPage(
             firstNameInput,
             emailInput,
             phoneInput,
-            sumLastInput,
-            wholeYearInput,
-            sumFirstInput,
             isOptionTypeState ? optionLowInput : null,
         ].filter(Boolean);
 
@@ -870,9 +823,6 @@ export function bgPage(
         secondNameInput,
         emailInput,
         phoneInput,
-        sumLastInput,
-        wholeYearInput,
-        sumFirstInput,
         optionLowInput,
     ].forEach((item) => {
         if (item) {
